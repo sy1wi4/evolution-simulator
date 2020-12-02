@@ -25,6 +25,7 @@ public enum MapDirection {
         }
     }
 
+    // czy to się przyda??
     public MapDirection next(){
         int idx = this.ordinal();
         return this.values()[(idx + 1) % 8];
