@@ -29,4 +29,24 @@ public interface IWorldMap {
      * @return Object or null if the position is not occupied.
      */
     Object objectAt(Vector2d position);
+
+    /**
+     * Return an object at a given position.
+     *
+     * @param width
+     * @param height
+     *            Size of the map.
+     * @return Random position of given map.
+     */
+    Vector2d getRandomPosition(int width, int height);
+
+    /**
+     * Indicate if we can place initial animal on given position.
+     * Animal cannot be placed on position occupied with another animal.
+     *
+     * @param position
+     *            The position checked for the placement possibility.
+     * @return True if the animal can be placed to that position.
+     */
+    boolean canPlaceFirstAnimal(Vector2d position);
 }

@@ -8,9 +8,8 @@ public class Animal implements IMapElement {
     private Vector2d position;
     private IWorldMap map;
     private Genotype genotype;
-    private int energy;
+    private int energy;     // mówi nam ile dni zostało jeszcze danemu zwierzątku
     private ArrayList<IPositionChangeObserver> observers;
-
 
 
 
@@ -42,45 +41,17 @@ public class Animal implements IMapElement {
     }
 
 
-//    public void tryToMove(Vector2d newPosition) {
-//
-//        if (this.map.canMoveTo(newPosition)) {
-//            Vector2d oldPosition = this.position;
-//
-//            this.position = newPosition;
-//            // informuje obserwatorów o zmianie pozycji
-//            positionChanged(oldPosition, newPosition);
-//
-//        }
-//    }
+    public void move() {
+        int turn = genotype.chooseTurn();
+        MapDirection newOrientation = MapDirection.values()[turn];
+        this.orientation = newOrientation;
+        Vector2d oldPosition = this.position;
+        Vector2d newPosition = this.position.add(this.orientation.toUnitVector());
+        this.position = newPosition;
+        //this.energy -=
+        positionChanged(oldPosition, newPosition);
 
-
-//    public void move(MoveDirection direction) {
-//
-//        Vector2d newPosition;
-//        switch (direction) {
-//
-//            case RIGHT:
-//                this.orientation = this.orientation.next();
-//                break;
-//
-//            case LEFT:
-//                this.orientation = this.orientation.previous();
-//                break;
-//
-//            case FORWARD:
-//                newPosition = position.add(orientation.toUnitVector());
-//                tryToMove(newPosition);
-//                break;
-//
-//            case BACKWARD:
-//                newPosition = position.subtract(orientation.toUnitVector());
-//                tryToMove(newPosition);
-//                break;
-
-//        }
-//
-//    }
+    }
 
     public void addObserver(IPositionChangeObserver observer){
         this.observers.add(observer);

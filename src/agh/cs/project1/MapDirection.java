@@ -1,5 +1,7 @@
 package agh.cs.project1;
 
+import java.util.Random;
+
 public enum MapDirection {
     NORTH,
     NORTH_EAST,
@@ -49,4 +51,5 @@ public enum MapDirection {
             default: return null;
         }
     }
+
 }

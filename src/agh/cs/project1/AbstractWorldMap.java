@@ -5,31 +5,16 @@ import java.util.*;
 
 abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{
     protected LinkedHashMap<Vector2d,Animal> animals = new LinkedHashMap<>();
-
-    public abstract boolean canMoveTo(Vector2d position);
+    protected LinkedHashMap<Vector2d,Animal> plants = new LinkedHashMap<>();
+    protected int width;
+    protected int height;
+    private final Random random = new Random();
 
     @Override
     public Object objectAt(Vector2d position) {
+
+        // zmień
         return animals.get(position);
-    }
-
-    protected abstract Vector2d getLeftCorner();
-    protected abstract Vector2d getRightCorner();
-
-    public boolean isOccupied(Vector2d position) {
-        return objectAt(position) != null;
-    }
-
-    public boolean place(Animal animal) {
-        if (canMoveTo(animal.getPosition())){
-            animals.put(animal.getPosition(),animal);
-            // dodając zwierzę, rejestrujemy mapę   jako jego obserwatora
-            animal.addObserver(this);
-            return true;
-
-        }
-        else throw new IllegalArgumentException("Position " + animal.getPosition().toString() + " is wrong");
-
     }
 
     @Override
@@ -38,4 +23,13 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{
         animals.remove(oldPosition);
         animals.put(newPosition, animal);
     }
+
+    public Vector2d getRandomPosition(int width, int height){
+        int x = random.nextInt(width);
+        int y = random.nextInt(height);
+
+        Vector2d position = new Vector2d(x,y);
+        return position;
+    }
+
 }
