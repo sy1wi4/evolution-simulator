@@ -20,7 +20,6 @@ public class SimulationEngine{
         this.params = params;
         this.animals  = new ArrayList<>();
         this.plants = new ArrayList<>();
-
     }
 
     private void placeFirstAnimals(int numberOfAnimals){
@@ -37,7 +36,13 @@ public class SimulationEngine{
     }
 
     private void plantJungle(){
+        Vector2d jungleLowerLeft = map.getJungleLowerLeft(params.getWidth(), params.getHeight(),
+                params.getJungleRatio());
 
+        Vector2d jungleUpperRight = map.getJungleUpperRight(params.getWidth(), params.getHeight(),
+                params.getJungleRatio());
     }
+
+
 
 }

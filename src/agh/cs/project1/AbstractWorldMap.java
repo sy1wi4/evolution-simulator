@@ -8,6 +8,7 @@ abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{
     protected LinkedHashMap<Vector2d,Animal> plants = new LinkedHashMap<>();
     protected int width;
     protected int height;
+    protected int jungleRatio;
     private final Random random = new Random();
 
     @Override
