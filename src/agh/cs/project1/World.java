@@ -12,6 +12,14 @@ public class World {
         // ładowanie parametrów z pliku .json
         Gson gson = new Gson();
         Parameters params =  (Parameters) gson.fromJson(new FileReader("src\\agh\\cs\\project1\\parameters.json"), Parameters.class);
-        System.out.println(params.getHeight());
+
+
+        /////////////////////////////////////////////////////////////////
+
+        IWorldMap map = new Map(params.getWidth(), params.getHeight(), params.getJungleRatio(),
+                params.getStartEnergy(),params.getNumberOfAnimals());
+        SimulationEngine engine = new SimulationEngine(map,params);
+        System.out.println(map.toString());
+
     }
 }

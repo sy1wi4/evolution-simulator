@@ -20,7 +20,6 @@ public interface IWorldMap {
      * @return True if the animal was placed. The animal cannot be placed if the map is already occupied.
      */
     boolean place(Animal animal);
-
     /**
      * Return an object at a given position.
      *
@@ -31,25 +30,28 @@ public interface IWorldMap {
     Object objectAt(Vector2d position);
 
     /**
-     * Return random position on the map.
+     * Return random position on given part of map.
      *
-     * @param width
-     *            Width of the map.
-     * @param height
-     *            Height of the map.
+     * @param minX
+     *            X coordinate of lower left corner of given area.
+     * @param maxX
+     *            X coordinate of upper right corner of given area.
+     * @param minY
+     *            Y coordinate of lower left corner of given area.
+     * @param minY
+     *            Y coordinate upper right corner of given area.
      * @return Random position of given map.
      */
-    Vector2d getRandomPosition(int width, int height);
+    Vector2d getRandomPosition(int minX, int maxX, int minY, int maxY);
 
     /**
-     * Indicate if we can place initial animal on given position.
-     * Animal cannot be placed on position occupied with another animal.
+     * Return true if given position on the map is occupied.
      *
      * @param position
-     *            The position checked for the placement possibility.
-     * @return True if the animal can be placed to that position.
+     *            Position to check.
+     * @return True if the position is occupied.
      */
-    boolean canPlaceFirstAnimal(Vector2d position);
+    boolean isOccupied(Vector2d position);
 
     /**
      * Return lower left corner of jungle planted on  the map.
@@ -62,7 +64,7 @@ public interface IWorldMap {
      *           Size of the map.
      * @return Random lower left corner of jungle.
      */
-    Vector2d getJungleLowerLeft(int width, int height, float jungleRatio);
+    Vector2d getJungleLowerLeft(int width, int height, double jungleRatio);
 
     /**
      * Return upper right corner of jungle planted on  the map.
@@ -75,6 +77,7 @@ public interface IWorldMap {
      *           Size of the map.
      * @return Random upper right corner of jungle.
      */
-    Vector2d getJungleUpperRight(int width, int height, float jungleRatio);
+    Vector2d getJungleUpperRight(int width, int height, double jungleRatio);
+
 
 }

@@ -8,7 +8,7 @@ public class Parameters {
     private int moveEnergy;
     private int plantEnergy;
     private int numberOfAnimals;
-    private float jungleRatio;
+    private double jungleRatio;  // less than 0.5
 
 
     public int getWidth() {
@@ -35,7 +35,7 @@ public class Parameters {
         return numberOfAnimals;
     }
 
-    public float getJungleRatio() {
+    public double getJungleRatio() {
         return jungleRatio;
     }
 
