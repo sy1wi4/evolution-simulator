@@ -17,9 +17,19 @@ public interface IWorldMap {
      *
      * @param animal
      *            The animal to place on the map.
-     * @return True if the animal was placed. The animal cannot be placed if the map is already occupied.
+     * @return True if the animal was placed.
      */
     boolean place(Animal animal);
+
+    /**
+     * Place a animal on the map.
+     *
+     * @param plant
+     *            The plant to place on the map.
+     * @return True if the plant was placed. The plant cannot be placed if the map is already occupied.
+     */
+    boolean setPlant(Plant plant);
+
     /**
      * Return an object at a given position.
      *

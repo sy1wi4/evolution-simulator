@@ -10,18 +10,13 @@ public class Map implements IWorldMap,IPositionChangeObserver{
     private final MapVisualizer mapVisualizer = new MapVisualizer(this);
     private final int width;
     private final int height;
-    private final int startEnergy;
-    private double jungleRatio;
     private final Random random = new Random();
 
-    public Map(int width, int height, double jungleRatio, int startEnergy,int numOfAnimals){
+    public Map(int width, int height, double jungleRatio, int startEnergy){
         this.width = width;
         this.height = height;
-        this.startEnergy = startEnergy;
         this.animals  = new LinkedHashMap<>();
         this.plants  = new LinkedHashMap<>();
-        this.jungleRatio = jungleRatio;
-        placeFirstAnimals(numOfAnimals);
     }
 
 
@@ -32,6 +27,13 @@ public class Map implements IWorldMap,IPositionChangeObserver{
         animal.addObserver(this);
         return true;
     }
+
+    @Override
+    public boolean setPlant(Plant plant) {
+        plants.put(plant.getPosition(),plant);
+        return true;
+    }
+
 
     @Override
     public Object objectAt(Vector2d position) {
@@ -65,7 +67,6 @@ public class Map implements IWorldMap,IPositionChangeObserver{
     @Override
     public Vector2d getJungleLowerLeft(int width, int height, double jungleRatio) {
         int a = getSideOfJungle(width, height, jungleRatio);
-        System.out.println(a);
         int x = width/2 - a/2;
         int y = height/2 - a/2;
         return(new Vector2d(x,y));
@@ -91,25 +92,6 @@ public class Map implements IWorldMap,IPositionChangeObserver{
 
     public String toString(){
         return mapVisualizer.draw(new Vector2d(0,0), new Vector2d(width-1,height-1));
-    }
-
-    private void placeFirstAnimals(int numberOfAnimals){
-        for (int i=0; i<numberOfAnimals; i++){
-            Vector2d position;
-            int idx = -1;
-            do {
-                position = this.getRandomPosition(0,width-1, 0, height-1);
-                idx += 1;
-
-            } while(this.isOccupied(position) && idx < numberOfAnimals);
-            if (idx == numberOfAnimals){
-                throw new IllegalArgumentException("Too much initial animals! Change parameters!");
-            }
-
-            MapDirection orientation = MapDirection.values()[random.nextInt(8)];
-            Animal animal = new Animal(this, position,orientation,startEnergy);
-            this.place(animal);
-        }
     }
 
 }

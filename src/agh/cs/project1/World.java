@@ -17,9 +17,12 @@ public class World {
         /////////////////////////////////////////////////////////////////
 
         IWorldMap map = new Map(params.getWidth(), params.getHeight(), params.getJungleRatio(),
-                params.getStartEnergy(),params.getNumberOfAnimals());
+                params.getStartEnergy());
         SimulationEngine engine = new SimulationEngine(map,params);
         System.out.println(map.toString());
+
+
+        // TODO Szukanie miejsca np. dla rośliny w dżungli - do kiedy? Kiedy stwierdzić, że jest ona pełna?
 
     }
 }
