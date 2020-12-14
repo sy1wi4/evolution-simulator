@@ -1,15 +1,16 @@
 package agh.cs.project1;
 
 import java.util.ArrayList;
+import static agh.cs.project1.MapDirection.values;
 
 public class Animal implements IMapElement {
 
     private MapDirection orientation;
     private Vector2d position;
     private IWorldMap map;
-    private Genotype genotype;
+    private final Genotype genotype;
     private int energy;     // mówi nam ile dni zostało jeszcze danemu zwierzątku
-    private ArrayList<IPositionChangeObserver> observers;
+    private final ArrayList<IPositionChangeObserver> observers;
 
 
 
@@ -20,7 +21,7 @@ public class Animal implements IMapElement {
         this.map = map;
         this.energy = startEnergy;
         this.genotype = new Genotype();
-        map.place(this);
+        map.placeAnimal(this);
     }
 
 
@@ -43,13 +44,32 @@ public class Animal implements IMapElement {
 
     public void move() {
         int turn = genotype.chooseTurn();
-        MapDirection newOrientation = MapDirection.values()[turn];
-        this.orientation = newOrientation;
+        this.orientation = values()[(turn + this.orientation.ordinal()) % 8];
+
         Vector2d oldPosition = this.position;
         Vector2d newPosition = this.position.add(this.orientation.toUnitVector());
+        int newPositionX = newPosition.x;
+        int newPositionY = newPosition.y;
+
+        // jeżeli zwierzę wyszłoby za mapę, to "zawija" na drugi kraniec
+        if (newPositionX == -1) {
+            newPositionX += map.getWidth();
+        }
+        else if (newPositionX == map.getWidth()) {
+            newPositionX -= map.getWidth();
+        }
+
+        if (newPositionY == -1) {
+            newPositionY += map.getHeight();
+        }
+        else if (newPositionY == map.getHeight()) {
+            newPositionY -= map.getHeight();
+        }
+
+        newPosition = new Vector2d(newPositionX,newPositionY);
         this.position = newPosition;
-        //this.energy -=
-        positionChanged(oldPosition, newPosition);
+        this.energy -= 1;
+        positionChanged(this, oldPosition, newPosition);
 
     }
 
@@ -62,9 +82,9 @@ public class Animal implements IMapElement {
     }
 
     //  informuje wszystkich obserwatorów, o tym że pozycja została zmieniona
-    private void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+    private void positionChanged(Animal animal, Vector2d oldPosition, Vector2d newPosition) {
         for (IPositionChangeObserver observer : observers){
-            observer.positionChanged(oldPosition, newPosition);
+            observer.positionChanged(animal, oldPosition, newPosition);
         }
     }
 

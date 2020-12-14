@@ -72,7 +72,7 @@ public class MapVisualizer {
     private String drawObject(Vector2d currentPosition) {
         String result = null;
         if (this.map.isOccupied(currentPosition)) {
-
+            // wyświetla liczbę zwierząt na danej pozycji
             Object object = this.map.objectAt(currentPosition);
             if (object != null) {
                 result = object.toString();

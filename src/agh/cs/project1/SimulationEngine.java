@@ -23,9 +23,10 @@ public class SimulationEngine{
         this.plants = new ArrayList<>();
         placeFirstAnimals(params.getNumberOfAnimals());
         setPlants();
-        System.out.println(map.getJungleLowerLeft(params.getWidth(),params.getHeight(),params.getJungleRatio()).toString());
-        System.out.println(map.getJungleUpperRight(params.getWidth(),params.getHeight(),params.getJungleRatio()).toString());
+        System.out.println(map.toString());
+        System.out.println(map.getNumberOfAnimals());
 
+        moveAnimals();
     }
 
 
@@ -44,7 +45,9 @@ public class SimulationEngine{
 
             MapDirection orientation = MapDirection.values()[random.nextInt(8)];
             Animal animal = new Animal(map, position,orientation,params.getStartEnergy());
-            map.place(animal);
+
+            animals.add(animal);
+
         }
     }
 
@@ -71,7 +74,9 @@ public class SimulationEngine{
 
         if (ctr < params.getHeight()*params.getWidth()){
             Plant plant = new Plant(junglePosition);
-            map.setPlant(plant);
+            if (map.setPlant(plant)){
+                plants.add(plant);
+            }
         }
     }
 
@@ -93,7 +98,16 @@ public class SimulationEngine{
             || map.isOccupied(steppePosition));
 
         Plant plant = new Plant(steppePosition);
-        map.setPlant(plant);
+        if (map.setPlant(plant)){
+            plants.add(plant);
+        }
+    }
+
+    private void moveAnimals(){
+        for (Animal a:animals){
+            a.move();
+            System.out.println(map.toString());
+        }
     }
 
 }

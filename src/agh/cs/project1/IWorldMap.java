@@ -19,7 +19,7 @@ public interface IWorldMap {
      *            The animal to place on the map.
      * @return True if the animal was placed.
      */
-    boolean place(Animal animal);
+    boolean placeAnimal(Animal animal);
 
     /**
      * Place a animal on the map.
@@ -89,5 +89,9 @@ public interface IWorldMap {
      */
     Vector2d getJungleUpperRight(int width, int height, double jungleRatio);
 
+    int getHeight();
+    int getWidth();
 
+    // to debug
+    int getNumberOfAnimals();
 }

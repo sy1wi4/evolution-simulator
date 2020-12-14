@@ -16,13 +16,16 @@ public class World {
 
         /////////////////////////////////////////////////////////////////
 
-        IWorldMap map = new Map(params.getWidth(), params.getHeight(), params.getJungleRatio(),
+        IWorldMap map = new Savannah(params.getWidth(), params.getHeight(), params.getJungleRatio(),
                 params.getStartEnergy());
         SimulationEngine engine = new SimulationEngine(map,params);
-        System.out.println(map.toString());
 
 
         // TODO Szukanie miejsca np. dla rośliny w dżungli - do kiedy? Kiedy stwierdzić, że jest ona pełna?
-
+        // TODO może by tak wydzielić funkcje np. do szukania różnych wolnych pozycji, itd?
+        // co musi być w IWorldMap, a co nie?
+        // bool gdy dodaję np. zwierzaka konieczny?
+        // nextDay czy cos w sim engine
+        // sprawdz czy kolejka pr. dziala git - wyszukiwanie najsilniejszych itd
     }
 }

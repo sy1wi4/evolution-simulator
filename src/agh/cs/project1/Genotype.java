@@ -1,6 +1,5 @@
 package agh.cs.project1;
 
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.Arrays;
 
@@ -20,6 +19,7 @@ public class Genotype {
         Arrays.sort(this.genotype);
     }
 
+    // na podstawie genotypu "wybiera" obrót
     public int chooseTurn(){
         return this.genotype[random.nextInt(32)];
     }
