@@ -96,6 +96,8 @@ public interface IWorldMap {
     int getWidth();
     LinkedList<Animal> findAnimalsToFeed(Vector2d position);
     LinkedList<LinkedList<Animal>> findAllAnimalsToReproduce();
+    boolean removePlant(Plant plant);
+
     // to debug
     int getNumberOfAnimals();
 }

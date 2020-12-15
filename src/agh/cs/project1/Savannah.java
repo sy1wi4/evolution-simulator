@@ -5,7 +5,6 @@ import java.util.*;
 public class Savannah implements IWorldMap,IPositionChangeObserver{
 
     private final LinkedList<Animal> animalsList;
-    private final LinkedList<Plant> plantsList;
     private final Map<Vector2d, PriorityQueue<Animal>> animals;
     private final Map<Vector2d, Plant> plants;
 
@@ -18,7 +17,6 @@ public class Savannah implements IWorldMap,IPositionChangeObserver{
         this.width = width;
         this.height = height;
         this.animalsList = new LinkedList<>();
-        this.plantsList = new LinkedList<>();
         this.animals = new HashMap<>();
         this.plants = new HashMap<>();
     }
@@ -36,8 +34,13 @@ public class Savannah implements IWorldMap,IPositionChangeObserver{
 
     @Override
     public boolean setPlant(Plant plant) {
-        plantsList.add(plant);
         plants.put(plant.getPosition(),plant);
+        return true;
+    }
+
+    @Override
+    public boolean removePlant(Plant plant) {
+        plants.remove(plant.getPosition());
         return true;
     }
 
@@ -122,9 +125,12 @@ public class Savannah implements IWorldMap,IPositionChangeObserver{
             Animal second = animalsOnPos.peek();
             animalsOnPos.add(first);
 
-            parents.add(first);
-            parents.add(second);
-            return parents;
+            if (second.canReproduce()) {
+                parents.add(first);
+                parents.add(second);
+                return parents;
+            }
+            else return null;
         }
         else return null;
     }
@@ -147,7 +153,7 @@ public class Savannah implements IWorldMap,IPositionChangeObserver{
     public LinkedList<Animal> findAnimalsToFeed(Vector2d position){
         PriorityQueue<Animal> animalsOnPos = animals.get(position);
 
-        if (animalsOnPos.size() >= 1){
+        if (animalsOnPos != null && animalsOnPos.size() >= 1){
             LinkedList<Animal> toFeed = new LinkedList<Animal>();
             Animal first = animalsOnPos.poll();
             toFeed.add(first);

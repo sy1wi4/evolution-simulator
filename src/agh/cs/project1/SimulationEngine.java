@@ -9,7 +9,6 @@ import java.util.Random;
 // implements IEngine?
 public class SimulationEngine{
     private final IWorldMap map;
-    // potrzebne?
     private final List<Animal> animals;
     private final List<Plant> plants;
     private final Parameters params;
@@ -22,12 +21,23 @@ public class SimulationEngine{
         this.params = params;
         this.animals  = new ArrayList<>();
         this.plants = new ArrayList<>();
+
         placeFirstAnimals(params.getNumberOfAnimals());
         setPlants();
+
         System.out.println(map.toString());
-        System.out.println(map.getNumberOfAnimals());
+        printStatus();
 
         moveAnimals();
+        nextDay();
+        System.out.println(map.toString());
+        printStatus();
+
+        moveAnimals();
+        nextDay();
+        System.out.println(map.toString());
+        printStatus();
+
     }
 
 
@@ -56,6 +66,10 @@ public class SimulationEngine{
     private void setPlants(){
         setJunglePlant();
         setSteppePlant();
+        setJunglePlant();
+        setSteppePlant();
+
+
     }
 
     private void setJunglePlant(){
@@ -107,19 +121,35 @@ public class SimulationEngine{
     private void moveAnimals(){
         for (Animal animal : animals){
             animal.move();
-            System.out.println(map.toString());
         }
+        System.out.println();
     }
 
-    // reproduce & feed animals
     private void nextDay(){
+        // feed animals
+        LinkedList<Plant> plantsToRemove = new LinkedList<Plant>();
         for (Plant plant : plants){
             LinkedList<Animal> toFeed = map.findAnimalsToFeed(plant.getPosition());
-            if (toFeed != null)
-                for (Animal animal: toFeed) animal.feed(params.getPlantEnergy()/toFeed.size());
+            if (toFeed != null) {
+                for (Animal animal : toFeed) {
+                    animal.feed(params.getPlantEnergy() / toFeed.size());
+                }
+                this.map.removePlant(plant);
+                plantsToRemove.add(plant);
+            }
         }
 
+        for (Plant plant : plantsToRemove) plants.remove(plant);
+
+        // reproduce animals
         LinkedList<LinkedList<Animal>> pairsToReproduce = map.findAllAnimalsToReproduce();
+
+    }
+
+    private void printStatus(){
+        for (Animal animal : animals) System.out.print(animal.getEnergy() + " ");
+        System.out.println();
+        for (Plant plant : plants) System.out.println(plant.getPosition());
     }
 
 }

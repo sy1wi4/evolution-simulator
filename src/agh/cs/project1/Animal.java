@@ -10,6 +10,7 @@ public class Animal implements IMapElement {
     private IWorldMap map;
     private final Genotype genotype;
     private int energy;     // mówi nam ile dni zostało jeszcze danemu zwierzątku
+    private final int startEnergy;
     private final ArrayList<IPositionChangeObserver> observers;
 
 
@@ -20,6 +21,7 @@ public class Animal implements IMapElement {
         this.observers = new ArrayList<>();
         this.map = map;
         this.energy = startEnergy;
+        this.startEnergy = startEnergy;
         this.genotype = new Genotype();
         map.placeAnimal(this);
     }
@@ -93,6 +95,11 @@ public class Animal implements IMapElement {
     }
 
     public void feed(int plantEnergy){
+        System.out.println("zjadl");
         this.energy += plantEnergy;
+    }
+
+    public boolean canReproduce(){
+        return this.energy >= this.startEnergy/2;
     }
 }
