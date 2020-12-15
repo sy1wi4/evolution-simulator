@@ -2,6 +2,7 @@ package agh.cs.project1;
 
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -104,10 +105,21 @@ public class SimulationEngine{
     }
 
     private void moveAnimals(){
-        for (Animal a:animals){
-            a.move();
+        for (Animal animal : animals){
+            animal.move();
             System.out.println(map.toString());
         }
+    }
+
+    // reproduce & feed animals
+    private void nextDay(){
+        for (Plant plant : plants){
+            LinkedList<Animal> toFeed = map.findAnimalsToFeed(plant.getPosition());
+            if (toFeed != null)
+                for (Animal animal: toFeed) animal.feed(params.getPlantEnergy()/toFeed.size());
+        }
+
+        LinkedList<LinkedList<Animal>> pairsToReproduce = map.findAllAnimalsToReproduce();
     }
 
 }

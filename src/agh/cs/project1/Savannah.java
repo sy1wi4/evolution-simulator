@@ -1,12 +1,6 @@
 package agh.cs.project1;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Random;
-import java.util.Comparator;
-import java.util.TreeSet;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class Savannah implements IWorldMap,IPositionChangeObserver{
 
@@ -98,7 +92,7 @@ public class Savannah implements IWorldMap,IPositionChangeObserver{
         if (animalsOnPos == null)
         {
             // zwierzęta są porządkowane względem energii, co umożliwia szybkie znalezienie najsilniejszych
-            PriorityQueue<Animal> newList = new PriorityQueue<>(Comparator.comparing(Animal::getEnergy));
+            PriorityQueue<Animal> newList = new PriorityQueue<>((a1,a2) -> a2.getEnergy() - a1.getEnergy());
             newList.add(animal);
             animals.put(position,newList);
         }
@@ -119,11 +113,57 @@ public class Savannah implements IWorldMap,IPositionChangeObserver{
         addAnimalToPos(animal,newPosition);
     }
 
-//    public LinkedList<Animal> findStrongestAnimals(Vector2d position){
-//        TreeSet animalsOnPos = animals.get(position);
-//
-//    }
-//
+    private LinkedList<Animal> findAnimalsToReproduceAtPosition(Vector2d position){
+        PriorityQueue<Animal> animalsOnPos = animals.get(position);
+        if(animalsOnPos.size() >= 2){
+            LinkedList<Animal> parents = new LinkedList<Animal>();
+            // poll - usuwa element z pq, natomiast peek nie
+            Animal first = animalsOnPos.poll();
+            Animal second = animalsOnPos.peek();
+            animalsOnPos.add(first);
+
+            parents.add(first);
+            parents.add(second);
+            return parents;
+        }
+        else return null;
+    }
+
+    @Override
+    // zrob ze tu pary a nie listy 2el xd
+    public LinkedList<LinkedList<Animal>> findAllAnimalsToReproduce(){
+        LinkedList<LinkedList<Animal>> toReproduce = new LinkedList<LinkedList<Animal>>();
+
+        for ( Vector2d position : animals.keySet() ) {
+            if (this.findAnimalsToReproduceAtPosition(position) != null)
+                toReproduce.add(this.findAnimalsToReproduceAtPosition(position));
+        }
+
+        return toReproduce;
+    }
+
+
+    @Override
+    public LinkedList<Animal> findAnimalsToFeed(Vector2d position){
+        PriorityQueue<Animal> animalsOnPos = animals.get(position);
+
+        if (animalsOnPos.size() >= 1){
+            LinkedList<Animal> toFeed = new LinkedList<Animal>();
+            Animal first = animalsOnPos.poll();
+            toFeed.add(first);
+            while (animalsOnPos.peek() != null && animalsOnPos.peek().getEnergy() == first.getEnergy()){
+                toFeed.add(animalsOnPos.poll());
+            }
+            animalsOnPos.addAll(toFeed);
+            return toFeed;
+        }
+        else return null;
+
+    }
+
+
+
+
 //    public Vector2d findChildPosition(){
 //        ;
 //    }
@@ -147,4 +187,6 @@ public class Savannah implements IWorldMap,IPositionChangeObserver{
     public int getWidth() {
         return width;
     }
+
+
 }

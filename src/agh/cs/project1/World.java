@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.*;
+
 
 public class World {
 
@@ -27,5 +29,8 @@ public class World {
         // bool gdy dodaję np. zwierzaka konieczny?
         // nextDay czy cos w sim engine
         // sprawdz czy kolejka pr. dziala git - wyszukiwanie najsilniejszych itd
+        // dzielenie rosliny miedzy zwierzeta int czy float>
+
+
     }
 }

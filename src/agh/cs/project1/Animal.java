@@ -91,4 +91,8 @@ public class Animal implements IMapElement {
     public int getEnergy() {
         return energy;
     }
+
+    public void feed(int plantEnergy){
+        this.energy += plantEnergy;
+    }
 }

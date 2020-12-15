@@ -3,6 +3,9 @@ package agh.cs.project1;
 // Interfejs jest gwarancją, że instancje klasy, która go
 // implementuje dostarczają konkretną funkcjonalność
 
+import java.util.LinkedList;
+import java.util.Map;
+
 /**
  * The interface responsible for interacting with the map of the world.
  * Assumes that Vector2d and MoveDirection classes are defined.
@@ -91,7 +94,8 @@ public interface IWorldMap {
 
     int getHeight();
     int getWidth();
-
+    LinkedList<Animal> findAnimalsToFeed(Vector2d position);
+    LinkedList<LinkedList<Animal>> findAllAnimalsToReproduce();
     // to debug
     int getNumberOfAnimals();
 }
