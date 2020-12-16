@@ -1,11 +1,10 @@
-package agh.cs.project1;
+package agh.cs.project1.simulation;
 
 public class Parameters {
 
     private int width;
     private int height;
     private int startEnergy;
-    private int moveEnergy;
     private int plantEnergy;
     private int numberOfAnimals;
     private double jungleRatio;  // less than 0.5
@@ -21,10 +20,6 @@ public class Parameters {
 
     public int getStartEnergy() {
         return startEnergy;
-    }
-
-    public int getMoveEnergy() {
-        return moveEnergy;
     }
 
     public int getPlantEnergy() {

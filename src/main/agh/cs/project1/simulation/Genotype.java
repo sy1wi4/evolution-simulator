@@ -1,4 +1,4 @@
-package agh.cs.project1;
+package agh.cs.project1.simulation;
 
 import java.util.Random;
 import java.util.Arrays;
@@ -22,5 +22,9 @@ public class Genotype {
     // na podstawie genotypu "wybiera" obrót
     public int chooseTurn(){
         return this.genotype[random.nextInt(32)];
+    }
+
+    public int[] getGenotype(){
+        return this.genotype;
     }
 }

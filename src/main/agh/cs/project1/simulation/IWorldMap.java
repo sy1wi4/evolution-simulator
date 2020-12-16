@@ -1,10 +1,9 @@
-package agh.cs.project1;
+package agh.cs.project1.simulation;
 
 // Interfejs jest gwarancją, że instancje klasy, która go
 // implementuje dostarczają konkretną funkcjonalność
 
 import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * The interface responsible for interacting with the map of the world.
@@ -95,8 +94,11 @@ public interface IWorldMap {
     int getHeight();
     int getWidth();
     LinkedList<Animal> findAnimalsToFeed(Vector2d position);
-    LinkedList<LinkedList<Animal>> findAllAnimalsToReproduce();
+    LinkedList<LinkedList<Animal>> findAllPairsToReproduce();
     boolean removePlant(Plant plant);
+    Vector2d getChildPosition(Vector2d parentsPosition);
+    void removeDeadAnimal(Animal animal, Vector2d position);
+    Animal getStrongestAnimal(Vector2d position);
 
     // to debug
     int getNumberOfAnimals();

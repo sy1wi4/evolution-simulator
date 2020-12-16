@@ -1,7 +1,7 @@
-package agh.cs.project1;
+package agh.cs.project1.simulation;
 
 import java.util.ArrayList;
-import static agh.cs.project1.MapDirection.values;
+import static agh.cs.project1.simulation.MapDirection.values;
 
 public class Animal implements IMapElement {
 
@@ -10,18 +10,18 @@ public class Animal implements IMapElement {
     private IWorldMap map;
     private final Genotype genotype;
     private int energy;     // mówi nam ile dni zostało jeszcze danemu zwierzątku
-    private final int startEnergy;
-    private final ArrayList<IPositionChangeObserver> observers;
+    private final ArrayList<IPositionChangeObserver> positionObservers;
+    private final ArrayList<IEnergyChangeObserver> energyObservers;
 
 
 
     public Animal(IWorldMap map, Vector2d initialPosition, MapDirection initialOrientation, int startEnergy){
         this.orientation = initialOrientation;
         this.position = initialPosition;
-        this.observers = new ArrayList<>();
+        this.positionObservers = new ArrayList<>();
+        this.energyObservers = new ArrayList<>();
         this.map = map;
         this.energy = startEnergy;
-        this.startEnergy = startEnergy;
         this.genotype = new Genotype();
         map.placeAnimal(this);
     }
@@ -44,8 +44,11 @@ public class Animal implements IMapElement {
     }
 
 
-    public void move() {
-        int turn = genotype.chooseTurn();
+    public int chooseTurn(){
+        return this.genotype.chooseTurn();
+    }
+
+    public void move(int turn) {
         this.orientation = values()[(turn + this.orientation.ordinal()) % 8];
 
         Vector2d oldPosition = this.position;
@@ -71,22 +74,39 @@ public class Animal implements IMapElement {
         newPosition = new Vector2d(newPositionX,newPositionY);
         this.position = newPosition;
         this.energy -= 1;
-        positionChanged(this, oldPosition, newPosition);
+        this.positionChanged(oldPosition, newPosition);
+        this.energyChanged();
 
     }
 
-    public void addObserver(IPositionChangeObserver observer){
-        this.observers.add(observer);
+    public void addPositionObserver(IPositionChangeObserver observer){
+        this.positionObservers.add(observer);
     }
 
-    public void removeObserver(IPositionChangeObserver observer){
-        this.observers.remove(observer);
+    public void removePositionObserver(IPositionChangeObserver observer){
+        this.positionObservers.remove(observer);
     }
+
+    public void addEnergyObserver(IEnergyChangeObserver observer){
+        this.energyObservers.add(observer);
+    }
+
+    public void removeEnergyObserver(IEnergyChangeObserver observer){
+        this.energyObservers.remove(observer);
+    }
+
 
     //  informuje wszystkich obserwatorów, o tym że pozycja została zmieniona
-    private void positionChanged(Animal animal, Vector2d oldPosition, Vector2d newPosition) {
-        for (IPositionChangeObserver observer : observers){
-            observer.positionChanged(animal, oldPosition, newPosition);
+    private void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+        for (IPositionChangeObserver observer : positionObservers){
+            observer.positionChanged(this, oldPosition, newPosition);
+        }
+    }
+
+    //  informuje wszystkich obserwatorów, o tym że energia się zmieniła
+    private void energyChanged() {
+        for (IEnergyChangeObserver observer : energyObservers){
+            observer.energyChanged(this);
         }
     }
 
@@ -95,11 +115,20 @@ public class Animal implements IMapElement {
     }
 
     public void feed(int plantEnergy){
-        System.out.println("zjadl");
+
         this.energy += plantEnergy;
+        this.energyChanged();
     }
 
-    public boolean canReproduce(){
-        return this.energy >= this.startEnergy/2;
+
+    public Animal reproduce(Animal other){
+        Vector2d childPosition = map.getChildPosition(this.position);
+        int childEnergy = this.energy/4 + other.energy/4;
+        this.energy -= this.energy/4;
+        other.energy -= other.energy/4;
+        this.energyChanged();
+        other.energyChanged();
+        return new Animal(map,childPosition,MapDirection.getRandomOrientation(),childEnergy);
     }
+
 }

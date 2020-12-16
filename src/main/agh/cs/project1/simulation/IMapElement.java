@@ -1,4 +1,4 @@
-package agh.cs.project1;
+package agh.cs.project1.simulation;
 
 public interface IMapElement {
     /**

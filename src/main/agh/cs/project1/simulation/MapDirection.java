@@ -1,4 +1,4 @@
-package agh.cs.project1;
+package agh.cs.project1.simulation;
 
 import java.util.Random;
 
@@ -50,6 +50,11 @@ public enum MapDirection {
             case NORTH_WEST: return new Vector2d(-1, 1);
             default: return null;
         }
+    }
+
+    public static MapDirection getRandomOrientation(){
+        Random random = new Random();
+        return MapDirection.values()[random.nextInt(8)];
     }
 
 }

@@ -1,4 +1,4 @@
-package agh.cs.project1;
+package agh.cs.project1.simulation;
 
 public class Plant implements IMapElement{
     private final Vector2d position;

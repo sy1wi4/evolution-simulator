@@ -1,10 +1,9 @@
-package agh.cs.project1;
+package agh.cs.project1.simulation;
 
 import com.google.gson.Gson;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.*;
 
 
 public class World {
@@ -13,13 +12,12 @@ public class World {
         Genotype g = new Genotype();
         // ładowanie parametrów z pliku .json
         Gson gson = new Gson();
-        Parameters params =  (Parameters) gson.fromJson(new FileReader("src\\agh\\cs\\project1\\parameters.json"), Parameters.class);
+        Parameters params =  (Parameters) gson.fromJson(new FileReader("src\\main\\agh\\cs\\project1\\simulation\\parameters.json"), Parameters.class);
 
 
         /////////////////////////////////////////////////////////////////
 
-        IWorldMap map = new Savannah(params.getWidth(), params.getHeight(), params.getJungleRatio(),
-                params.getStartEnergy());
+        IWorldMap map = new Savannah(params.getWidth(), params.getHeight(),params.getStartEnergy());
         SimulationEngine engine = new SimulationEngine(map,params);
 
 

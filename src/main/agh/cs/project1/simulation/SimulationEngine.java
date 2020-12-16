@@ -1,4 +1,4 @@
-package agh.cs.project1;
+package agh.cs.project1.simulation;
 
 
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-// implements IEngine?
+
 public class SimulationEngine{
     private final IWorldMap map;
     private final List<Animal> animals;
@@ -23,20 +23,16 @@ public class SimulationEngine{
         this.plants = new ArrayList<>();
 
         placeFirstAnimals(params.getNumberOfAnimals());
-        setPlants();
 
         System.out.println(map.toString());
         printStatus();
+        System.out.println("==============================================");
 
-        moveAnimals();
-        nextDay();
-        System.out.println(map.toString());
-        printStatus();
-
-        moveAnimals();
-        nextDay();
-        System.out.println(map.toString());
-        printStatus();
+        for (int i=0; i<7; i++) {
+            int day = i+1;
+            System.out.println("DAY " + day);
+            nextDay();
+        }
 
     }
 
@@ -54,7 +50,7 @@ public class SimulationEngine{
                 throw new IllegalArgumentException("Too much initial animals! Change parameters!");
             }
 
-            MapDirection orientation = MapDirection.values()[random.nextInt(8)];
+            MapDirection orientation = MapDirection.getRandomOrientation();
             Animal animal = new Animal(map, position,orientation,params.getStartEnergy());
 
             animals.add(animal);
@@ -62,14 +58,81 @@ public class SimulationEngine{
         }
     }
 
-    // codziennie 2 nowe rośliny w każdej ze stref
+
+    public void nextDay(){
+        removeDeadAnimals();
+        moveAnimals();
+        System.out.println("after move");
+        System.out.println(map.toString());
+        printStatus();
+
+        feedAnimals();
+        reproduceAnimals();
+        setPlants();
+        System.out.println("after reproducing, feeding & setting plants");
+        System.out.println(map.toString());
+        printStatus();
+        System.out.println("==============================================");
+    }
+
+
+
+    private void moveAnimals(){
+        for (Animal animal : animals){
+            int turn = animal.chooseTurn();
+            animal.move(turn);
+        }
+        System.out.println();
+    }
+
+    private void removeDeadAnimals(){
+        LinkedList<Animal> deadAnimals = new LinkedList<Animal>();
+        for (Animal animal : animals){
+            if (animal.getEnergy() <= 0){
+                System.out.println("animal died" + animal.getPosition());
+                deadAnimals.add(animal);
+                this.map.removeDeadAnimal(animal,animal.getPosition());
+            }
+        }
+        for (Animal animal : deadAnimals) {
+            animals.remove(animal);
+        }
+    }
+
+    private void feedAnimals(){
+        LinkedList<Plant> plantsToRemove = new LinkedList<Plant>();
+
+        for (Plant plant : plants){
+            LinkedList<Animal> toFeed = map.findAnimalsToFeed(plant.getPosition());
+            if (toFeed != null) {
+                for (Animal animal : toFeed) {
+                    animal.feed(params.getPlantEnergy() / toFeed.size());
+                    System.out.println("eaten: "+params.getPlantEnergy() / toFeed.size()+ " "+animal.getPosition() );
+                }
+                this.map.removePlant(plant);
+                plantsToRemove.add(plant);
+            }
+        }
+
+        for (Plant plant : plantsToRemove) plants.remove(plant);
+    }
+
+    private void reproduceAnimals(){
+        LinkedList<LinkedList<Animal>> pairsToReproduce = map.findAllPairsToReproduce();
+
+        System.out.println("pary do rozmnozenia: " + pairsToReproduce.size());
+        for (LinkedList<Animal> parents : pairsToReproduce){
+            Animal child = parents.getFirst().reproduce(parents.getLast());
+            System.out.println("NEW CHILD pos: " + child.getPosition() + " energy: " + child.getEnergy() + "  parents: "
+                    + parents.getFirst().getPosition());
+            animals.add(child);
+        }
+    }
+
+    // each day one new plant in the jungle and on the steppe
     private void setPlants(){
         setJunglePlant();
         setSteppePlant();
-        setJunglePlant();
-        setSteppePlant();
-
-
     }
 
     private void setJunglePlant(){
@@ -110,7 +173,7 @@ public class SimulationEngine{
 
             }
         } while((steppePosition.x >= llx && steppePosition.x <= urx && steppePosition.y >= lly && steppePosition.y <= ury)
-            || map.isOccupied(steppePosition));
+                || map.isOccupied(steppePosition));
 
         Plant plant = new Plant(steppePosition);
         if (map.setPlant(plant)){
@@ -118,38 +181,17 @@ public class SimulationEngine{
         }
     }
 
-    private void moveAnimals(){
-        for (Animal animal : animals){
-            animal.move();
-        }
-        System.out.println();
-    }
-
-    private void nextDay(){
-        // feed animals
-        LinkedList<Plant> plantsToRemove = new LinkedList<Plant>();
-        for (Plant plant : plants){
-            LinkedList<Animal> toFeed = map.findAnimalsToFeed(plant.getPosition());
-            if (toFeed != null) {
-                for (Animal animal : toFeed) {
-                    animal.feed(params.getPlantEnergy() / toFeed.size());
-                }
-                this.map.removePlant(plant);
-                plantsToRemove.add(plant);
-            }
-        }
-
-        for (Plant plant : plantsToRemove) plants.remove(plant);
-
-        // reproduce animals
-        LinkedList<LinkedList<Animal>> pairsToReproduce = map.findAllAnimalsToReproduce();
-
-    }
-
     private void printStatus(){
-        for (Animal animal : animals) System.out.print(animal.getEnergy() + " ");
+        for (Animal animal : animals) System.out.println("pos: " + animal.getPosition() + " energy: " + animal.getEnergy());
         System.out.println();
-        for (Plant plant : plants) System.out.println(plant.getPosition());
+        System.out.println("plants amount: " + plants.size());
+        System.out.println("animals amount: " + animals.size());
+
     }
+
+
+
+
+
 
 }
