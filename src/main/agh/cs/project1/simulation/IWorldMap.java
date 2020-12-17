@@ -1,7 +1,5 @@
 package agh.cs.project1.simulation;
 
-// Interfejs jest gwarancją, że instancje klasy, która go
-// implementuje dostarczają konkretną funkcjonalność
 
 import java.util.LinkedList;
 
@@ -98,8 +96,5 @@ public interface IWorldMap {
     boolean removePlant(Plant plant);
     Vector2d getChildPosition(Vector2d parentsPosition);
     void removeDeadAnimal(Animal animal, Vector2d position);
-    Animal getStrongestAnimal(Vector2d position);
-
-    // to debug
-    int getNumberOfAnimals();
+    int getSideOfJungle(int width, int height, double jungleRatio);
 }

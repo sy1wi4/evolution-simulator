@@ -16,23 +16,26 @@ public class SimulationEngine{
     private final Random random = new Random();
 
 
-    public SimulationEngine(IWorldMap map, Parameters params){
-        this.map = map;
+    public SimulationEngine(Parameters params){
+        this.map = new Savannah(params.getWidth(), params.getHeight(),params.getStartEnergy());
         this.params = params;
         this.animals  = new ArrayList<>();
         this.plants = new ArrayList<>();
 
         placeFirstAnimals(params.getNumberOfAnimals());
+        moveAnimals();
+        reproduceAnimals();
 
-        System.out.println(map.toString());
-        printStatus();
-        System.out.println("==============================================");
 
-        for (int i=0; i<7; i++) {
-            int day = i+1;
-            System.out.println("DAY " + day);
-            nextDay();
-        }
+//        System.out.println(map.toString());
+//        printStatus();
+//        System.out.println("==============================================");
+//
+//        for (int i=0; i<7; i++) {
+//            int day = i+1;
+//            System.out.println("DAY " + day);
+//            nextDay();
+//        }
 
     }
 
@@ -52,7 +55,6 @@ public class SimulationEngine{
 
             MapDirection orientation = MapDirection.getRandomOrientation();
             Animal animal = new Animal(map, position,orientation,params.getStartEnergy());
-
             animals.add(animal);
 
         }
@@ -60,19 +62,18 @@ public class SimulationEngine{
 
 
     public void nextDay(){
+        System.out.println("animals: " + animals.size());
+        System.out.println("plants: " + plants.size());
+
         removeDeadAnimals();
         moveAnimals();
-        System.out.println("after move");
-        System.out.println(map.toString());
-        printStatus();
-
         feedAnimals();
         reproduceAnimals();
         setPlants();
-        System.out.println("after reproducing, feeding & setting plants");
-        System.out.println(map.toString());
-        printStatus();
-        System.out.println("==============================================");
+//        System.out.println("after reproducing, feeding & setting plants");
+//        System.out.println(map.toString());
+//        printStatus();
+//        System.out.println("==============================================");
     }
 
 
@@ -82,14 +83,12 @@ public class SimulationEngine{
             int turn = animal.chooseTurn();
             animal.move(turn);
         }
-        System.out.println();
     }
 
     private void removeDeadAnimals(){
-        LinkedList<Animal> deadAnimals = new LinkedList<Animal>();
+        LinkedList<Animal> deadAnimals = new LinkedList<>();
         for (Animal animal : animals){
             if (animal.getEnergy() <= 0){
-                System.out.println("animal died" + animal.getPosition());
                 deadAnimals.add(animal);
                 this.map.removeDeadAnimal(animal,animal.getPosition());
             }
@@ -97,6 +96,7 @@ public class SimulationEngine{
         for (Animal animal : deadAnimals) {
             animals.remove(animal);
         }
+        System.out.println("dead: " + deadAnimals.size());
     }
 
     private void feedAnimals(){
@@ -107,26 +107,23 @@ public class SimulationEngine{
             if (toFeed != null) {
                 for (Animal animal : toFeed) {
                     animal.feed(params.getPlantEnergy() / toFeed.size());
-                    System.out.println("eaten: "+params.getPlantEnergy() / toFeed.size()+ " "+animal.getPosition() );
                 }
                 this.map.removePlant(plant);
                 plantsToRemove.add(plant);
             }
         }
-
         for (Plant plant : plantsToRemove) plants.remove(plant);
     }
 
     private void reproduceAnimals(){
         LinkedList<LinkedList<Animal>> pairsToReproduce = map.findAllPairsToReproduce();
 
-        System.out.println("pary do rozmnozenia: " + pairsToReproduce.size());
         for (LinkedList<Animal> parents : pairsToReproduce){
             Animal child = parents.getFirst().reproduce(parents.getLast());
-            System.out.println("NEW CHILD pos: " + child.getPosition() + " energy: " + child.getEnergy() + "  parents: "
-                    + parents.getFirst().getPosition());
             animals.add(child);
         }
+        System.out.println("born: " + pairsToReproduce.size());
+        System.out.println();
     }
 
     // each day one new plant in the jungle and on the steppe
@@ -144,17 +141,16 @@ public class SimulationEngine{
         Vector2d junglePosition;
         int ctr = 0;
 
-        // ile tak szukamy pozycji?
         do{
             junglePosition = map.getRandomPosition(llx,urx,lly,ury);
             ctr++;
-        } while(map.isOccupied(junglePosition) && ctr < params.getHeight()*params.getWidth());
+        } while(map.isOccupied(junglePosition) && ctr < params.getHeight() * params.getWidth());
 
-        if (ctr < params.getHeight()*params.getWidth()){
+        if (ctr < params.getHeight() * params.getWidth()){
             Plant plant = new Plant(junglePosition);
-            if (map.setPlant(plant)){
-                plants.add(plant);
-            }
+            map.setPlant(plant);
+            plants.add(plant);
+
         }
     }
 
@@ -166,7 +162,6 @@ public class SimulationEngine{
 
         Vector2d steppePosition;
 
-        // ile tak szukamy pozycji?
         do {
             steppePosition = map.getRandomPosition(0, params.getWidth() - 1, 0, params.getHeight() - 1);
             if (steppePosition.x < llx || steppePosition.x > urx || steppePosition.y < lly || steppePosition.y > ury) {
@@ -176,9 +171,21 @@ public class SimulationEngine{
                 || map.isOccupied(steppePosition));
 
         Plant plant = new Plant(steppePosition);
-        if (map.setPlant(plant)){
-            plants.add(plant);
-        }
+        map.setPlant(plant);
+        plants.add(plant);
+    }
+
+
+    public IWorldMap getMap() {
+        return map;
+    }
+
+    public List<Animal> getAnimals() {
+        return animals;
+    }
+
+    public List<Plant> getPlants() {
+        return plants;
     }
 
     private void printStatus(){
@@ -186,12 +193,9 @@ public class SimulationEngine{
         System.out.println();
         System.out.println("plants amount: " + plants.size());
         System.out.println("animals amount: " + animals.size());
-
     }
 
-
-
-
-
-
+    public boolean allAnimalsDead(){
+        return animals.size() == 0;
+    }
 }

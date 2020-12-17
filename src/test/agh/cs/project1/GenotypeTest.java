@@ -10,7 +10,7 @@ class GenotypeTest {
 
     @Test
     public void generateGenotypeTest(){
-        int[] g = genotype.getGenotype();
+        int[] g = genotype.getGenes();
         for (int gene : g) assertTrue(gene >= 0 && gene <=7);
     }
 

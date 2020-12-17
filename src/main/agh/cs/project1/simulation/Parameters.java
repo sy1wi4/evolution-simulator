@@ -31,6 +31,8 @@ public class Parameters {
     }
 
     public double getJungleRatio() {
+
+        if (jungleRatio > 0.5)  throw new IllegalArgumentException("Jungle ratio should be max 1/2! Change parameters");
         return jungleRatio;
     }
 
