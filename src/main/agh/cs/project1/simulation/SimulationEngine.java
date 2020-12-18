@@ -4,7 +4,6 @@ package agh.cs.project1.simulation;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 
 public class SimulationEngine{
@@ -12,8 +11,7 @@ public class SimulationEngine{
     private final List<Animal> animals;
     private final List<Plant> plants;
     private final Parameters params;
-
-    private final Random random = new Random();
+    private final Statistics stats;
 
 
     public SimulationEngine(Parameters params){
@@ -21,23 +19,30 @@ public class SimulationEngine{
         this.params = params;
         this.animals  = new ArrayList<>();
         this.plants = new ArrayList<>();
-
+        this.stats = new Statistics();
         placeFirstAnimals(params.getNumberOfAnimals());
-        moveAnimals();
-        reproduceAnimals();
-
-
-//        System.out.println(map.toString());
-//        printStatus();
-//        System.out.println("==============================================");
-//
-//        for (int i=0; i<7; i++) {
-//            int day = i+1;
-//            System.out.println("DAY " + day);
-//            nextDay();
-//        }
-
     }
+
+    public Statistics getStats(){
+        return stats;
+    }
+
+//    public void printStats(){
+//        System.out.println("~~~~~~~~~~~ stats ~~~~~~~~~~~~~~~");
+//        System.out.println("DAY: " + stats.getEpoch());
+//        System.out.println("ANIMALS: " + stats.getAliveAnimalsNumber());
+//        System.out.println("PLANTS: " + stats.getPlantsNumber());
+//        System.out.println("AVG CHILDREN: " + stats.getAverageChildrenNumber(this.getAnimals()));
+//        System.out.println("AVG ENERGY: " + stats.getAverageEnergyLevel(this.getAnimals()));
+//        System.out.println("AVG LIFESPAN: " + stats.getAverageDeadAnimalsLifespan());
+//        System.out.print("DOMINANT GENOTYPE: ");
+//        for (int g : stats.getDominantGenotype().getGenes()) System.out.print(g);
+//        System.out.println();
+//        System.out.println("HAS DOMINANT G: " + this.haveDominantGenotype());
+//
+//        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//
+//    }
 
 
     private void placeFirstAnimals(int numberOfAnimals){
@@ -56,32 +61,29 @@ public class SimulationEngine{
             MapDirection orientation = MapDirection.getRandomOrientation();
             Animal animal = new Animal(map, position,orientation,params.getStartEnergy());
             animals.add(animal);
+            stats.encounteredNewAnimal(animal.getGenotype());
 
         }
     }
 
 
     public void nextDay(){
-        System.out.println("animals: " + animals.size());
-        System.out.println("plants: " + plants.size());
-
-        removeDeadAnimals();
-        moveAnimals();
-        feedAnimals();
-        reproduceAnimals();
-        setPlants();
-//        System.out.println("after reproducing, feeding & setting plants");
-//        System.out.println(map.toString());
-//        printStatus();
-//        System.out.println("==============================================");
+        stats.nextEpoch();
+        if (animals.size() > 0) {
+            removeDeadAnimals();
+            moveAnimals();
+            feedAnimals();
+            reproduceAnimals();
+            setPlants();
+        }
     }
-
 
 
     private void moveAnimals(){
         for (Animal animal : animals){
             int turn = animal.chooseTurn();
             animal.move(turn);
+            animal.survivedNextDay();
         }
     }
 
@@ -95,12 +97,12 @@ public class SimulationEngine{
         }
         for (Animal animal : deadAnimals) {
             animals.remove(animal);
+            stats.animalDied(animal.getLifespan());
         }
-        System.out.println("dead: " + deadAnimals.size());
     }
 
     private void feedAnimals(){
-        LinkedList<Plant> plantsToRemove = new LinkedList<Plant>();
+        LinkedList<Plant> plantsToRemove = new LinkedList<>();
 
         for (Plant plant : plants){
             LinkedList<Animal> toFeed = map.findAnimalsToFeed(plant.getPosition());
@@ -109,6 +111,7 @@ public class SimulationEngine{
                     animal.feed(params.getPlantEnergy() / toFeed.size());
                 }
                 this.map.removePlant(plant);
+                stats.plantEaten();
                 plantsToRemove.add(plant);
             }
         }
@@ -121,9 +124,8 @@ public class SimulationEngine{
         for (LinkedList<Animal> parents : pairsToReproduce){
             Animal child = parents.getFirst().reproduce(parents.getLast());
             animals.add(child);
+            stats.encounteredNewAnimal(child.getGenotype());
         }
-        System.out.println("born: " + pairsToReproduce.size());
-        System.out.println();
     }
 
     // each day one new plant in the jungle and on the steppe
@@ -150,7 +152,7 @@ public class SimulationEngine{
             Plant plant = new Plant(junglePosition);
             map.setPlant(plant);
             plants.add(plant);
-
+            stats.newPlant();
         }
     }
 
@@ -164,15 +166,14 @@ public class SimulationEngine{
 
         do {
             steppePosition = map.getRandomPosition(0, params.getWidth() - 1, 0, params.getHeight() - 1);
-            if (steppePosition.x < llx || steppePosition.x > urx || steppePosition.y < lly || steppePosition.y > ury) {
 
-            }
         } while((steppePosition.x >= llx && steppePosition.x <= urx && steppePosition.y >= lly && steppePosition.y <= ury)
                 || map.isOccupied(steppePosition));
 
         Plant plant = new Plant(steppePosition);
         map.setPlant(plant);
         plants.add(plant);
+        stats.newPlant();
     }
 
 
@@ -188,14 +189,18 @@ public class SimulationEngine{
         return plants;
     }
 
-    private void printStatus(){
-        for (Animal animal : animals) System.out.println("pos: " + animal.getPosition() + " energy: " + animal.getEnergy());
-        System.out.println();
-        System.out.println("plants amount: " + plants.size());
-        System.out.println("animals amount: " + animals.size());
-    }
 
     public boolean allAnimalsDead(){
         return animals.size() == 0;
+    }
+
+    public int haveDominantGenotype(){
+        int ctr = 0;
+        for (Animal animal : animals){
+            if (animal.getGenotype().equals(stats.getDominantGenotype())){
+                ctr++;
+            }
+        }
+        return ctr;
     }
 }

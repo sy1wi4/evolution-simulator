@@ -17,18 +17,16 @@ public interface IWorldMap {
      *
      * @param animal
      *            The animal to place on the map.
-     * @return True if the animal was placed.
      */
-    boolean placeAnimal(Animal animal);
+    void placeAnimal(Animal animal);
 
     /**
      * Place a animal on the map.
      *
      * @param plant
      *            The plant to place on the map.
-     * @return True if the plant was placed. The plant cannot be placed if the map is already occupied.
      */
-    boolean setPlant(Plant plant);
+    void setPlant(Plant plant);
 
     /**
      * Return an object at a given position.
@@ -48,7 +46,7 @@ public interface IWorldMap {
      *            X coordinate of upper right corner of given area.
      * @param minY
      *            Y coordinate of lower left corner of given area.
-     * @param minY
+     * @param maxY
      *            Y coordinate upper right corner of given area.
      * @return Random position of given map.
      */
@@ -93,7 +91,7 @@ public interface IWorldMap {
     int getWidth();
     LinkedList<Animal> findAnimalsToFeed(Vector2d position);
     LinkedList<LinkedList<Animal>> findAllPairsToReproduce();
-    boolean removePlant(Plant plant);
+    void removePlant(Plant plant);
     Vector2d getChildPosition(Vector2d parentsPosition);
     void removeDeadAnimal(Animal animal, Vector2d position);
     int getSideOfJungle(int width, int height, double jungleRatio);

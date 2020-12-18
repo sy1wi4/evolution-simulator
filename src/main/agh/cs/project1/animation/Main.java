@@ -8,31 +8,40 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Main implements ActionListener {
-    private final int delay;   // milliseconds
-    private Timer timer;
-    public Frame frame;
-    public MapPanel simulationVisualizer;
-    public SimulationEngine engine;
+    private final Timer timer;
+    private final MapPanel mapPanel;
+    private final SimulationEngine engine1;
+    private final SimulationEngine engine2;
 
-    public Main(SimulationEngine engine, Parameters params, int delay){
-        this.delay = delay;
+    private JButton startButton;
+
+    public Main(SimulationEngine engine1,SimulationEngine engine2, Parameters params){
+        int delay = params.getDelay();
         this.timer = new Timer(delay,this);
-        this.frame = new Frame();
-        this.engine = engine;
-        this.simulationVisualizer = new MapPanel(engine,this, params);
-        simulationVisualizer.setSize(1,1);
+        Frame frame = new Frame();
 
-        frame.add(simulationVisualizer);
+        this.engine1 = engine1;
+        this.engine2 = engine2;
+        this.mapPanel = new MapPanel(engine1,engine2, params);
+
+
         frame.setVisible(true);
-
-        timer.start();
+        frame.add(mapPanel);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        simulationVisualizer.repaint();
-        engine.nextDay();
-        if (engine.allAnimalsDead())
+
+        mapPanel.repaint();
+        engine1.nextDay();
+        engine2.nextDay();
+        if (engine1.allAnimalsDead() && engine2.allAnimalsDead())
             timer.stop();
+    }
+
+
+
+    public void run(){
+        timer.start();
     }
 }

@@ -14,6 +14,8 @@ public class Animal implements IMapElement {
     private final int startEnergy; // to color animal on map
     private final ArrayList<IPositionChangeObserver> positionObservers;
     private final ArrayList<IEnergyChangeObserver> energyObservers;
+    private int children;
+    private int lifespan;
 
 
     // initial animal - random genes
@@ -26,6 +28,8 @@ public class Animal implements IMapElement {
         this.energy = startEnergy;
         this.startEnergy = startEnergy;
         this.genotype = new Genotype();
+        this.children = 0;
+        this.lifespan = 0;
         map.placeAnimal(this);
     }
 
@@ -153,11 +157,30 @@ public class Animal implements IMapElement {
 
         this.energyChanged();
         other.energyChanged();
+        this.newChild();
+        other.newChild();
         Genotype crossedGenotype = this.genotype.cross(other.getGenotype());
         return new Animal(map,childPosition,MapDirection.getRandomOrientation(),childEnergy,crossedGenotype);
+    }
+
+    private void newChild() {
+        this.children++;
+    }
+
+    public int getNumberOfChildren(){
+        return this.children;
+    }
+
+    public void survivedNextDay(){
+        this.lifespan++;
+    }
+
+    public int getLifespan(){
+        return this.lifespan;
     }
 
     public Genotype getGenotype() {
         return genotype;
     }
+
 }

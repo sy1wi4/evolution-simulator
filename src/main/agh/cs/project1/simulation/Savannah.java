@@ -2,12 +2,10 @@ package agh.cs.project1.simulation;
 
 import java.util.*;
 
-public class Savannah implements IWorldMap,IPositionChangeObserver,IEnergyChangeObserver{
+public class Savannah implements IWorldMap,IPositionChangeObserver, IEnergyChangeObserver {
 
-    private final LinkedList<Animal> animalsList;
     private final Map<Vector2d, PriorityQueue<Animal>> animals;
     private final Map<Vector2d, Plant> plants;
-    private final MapVisualizer mapVisualizer = new MapVisualizer(this);
     private final int width;
     private final int height;
     private final int startEnergy;
@@ -18,15 +16,13 @@ public class Savannah implements IWorldMap,IPositionChangeObserver,IEnergyChange
         this.width = width;
         this.height = height;
         this.startEnergy = startEnergy;
-        this.animalsList = new LinkedList<>();
         this.animals = new HashMap<>();
         this.plants = new HashMap<>();
     }
 
 
     @Override
-    public boolean placeAnimal(Animal animal) {
-        animalsList.add(animal);
+    public void placeAnimal(Animal animal) {
 
         // after placing animal on map, add map as its energy & position observer
         animal.addPositionObserver(this);
@@ -34,21 +30,18 @@ public class Savannah implements IWorldMap,IPositionChangeObserver,IEnergyChange
 
         Vector2d position = animal.getPosition();
         addAnimalAtPosition(animal,position);
-        return true;
     }
 
 
     @Override
-    public boolean setPlant(Plant plant) {
+    public void setPlant(Plant plant) {
         plants.put(plant.getPosition(),plant);
-        return true;
     }
 
 
     @Override
-    public boolean removePlant(Plant plant) {
+    public void removePlant(Plant plant) {
         plants.remove(plant.getPosition());
-        return true;
     }
 
 
@@ -103,7 +96,6 @@ public class Savannah implements IWorldMap,IPositionChangeObserver,IEnergyChange
     @Override
     public void removeDeadAnimal(Animal animal, Vector2d position){
         removeAnimalFromPosition(animal,position);
-        animalsList.remove(animal);
         animal.removeEnergyObserver(this);
         animal.removePositionObserver(this);
     }
@@ -153,14 +145,15 @@ public class Savannah implements IWorldMap,IPositionChangeObserver,IEnergyChange
 
         if(animalsOnPos.size() >= 2){
             LinkedList<Animal> parents;
-            parents = new LinkedList<Animal>();
+            parents = new LinkedList<>();
             // [poll] removes element from pq, [peek] doesn't
             Animal first = animalsOnPos.poll();
             Animal second = animalsOnPos.peek();
             animalsOnPos.add(first);
 
             // animals can reproduce only if both have enough energy
-            if (second.getEnergy() >= this.startEnergy/2) {
+            assert second != null;
+            if (second.getEnergy() >= (this.startEnergy / 2)) {
                 parents.add(first);
                 parents.add(second);
                 return parents;
@@ -173,7 +166,7 @@ public class Savannah implements IWorldMap,IPositionChangeObserver,IEnergyChange
 
     @Override
     public LinkedList<LinkedList<Animal>> findAllPairsToReproduce(){
-        LinkedList<LinkedList<Animal>> toReproduce = new LinkedList<LinkedList<Animal>>();
+        LinkedList<LinkedList<Animal>> toReproduce = new LinkedList<>();
 
         for ( Vector2d position : animals.keySet() ) {
             if (this.findAnimalsToReproduceAtPosition(position) != null)
@@ -234,10 +227,6 @@ public class Savannah implements IWorldMap,IPositionChangeObserver,IEnergyChange
         return new Vector2d(x,y);
     }
 
-    // do usuniecia
-    public String toString(){
-        return mapVisualizer.draw(new Vector2d(0,0), new Vector2d(width-1,height-1));
-    }
 
     public Animal getStrongestAnimal(Vector2d position){
         PriorityQueue<Animal> animalsOnPos = animals.get(position);

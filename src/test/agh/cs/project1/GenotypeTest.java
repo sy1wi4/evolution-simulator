@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GenotypeTest {
 
-    Genotype genotype = new Genotype();
+    private final Genotype genotype = new Genotype();
 
     @Test
     public void generateGenotypeTest(){

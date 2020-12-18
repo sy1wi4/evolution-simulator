@@ -1,8 +1,7 @@
 package agh.cs.project1.simulation;
 
-import java.util.ArrayList;
-import java.util.Random;
 import java.util.Arrays;
+import java.util.Random;
 
 public class Genotype {
     private final int[] genes;
@@ -44,6 +43,12 @@ public class Genotype {
 
     public int[] getGenes(){
         return this.genes;
+    }
+
+    public StringBuilder getStringGenotype(){
+        StringBuilder genotype = new StringBuilder();
+        for (int g : genes) genotype.append(g);
+        return genotype;
     }
 
     public Genotype cross(Genotype other) {
@@ -95,10 +100,6 @@ public class Genotype {
                 System.arraycopy(firstParentGenes, idx1 + 1, childGenes, idx1 + 1, idx2 -idx1);
                 System.arraycopy(secondParentGenes, idx2 + 1, childGenes, idx2 + 1, 31 - idx2);
             }
-            default -> {
-                throw new IllegalArgumentException("Part must be 0, 1 or 2");
-
-            }
         }
 
 
@@ -132,4 +133,20 @@ public class Genotype {
         }
         return -1;
     }
+
+    public boolean equals(Object other){
+        if (this == other)
+            return true;
+        if (!(other instanceof Genotype))
+            return false;
+        Genotype that = (Genotype) other;
+        return Arrays.equals(this.genes, that.genes);
+    }
+
+    @Override
+    public int hashCode(){
+        return Arrays.hashCode(this.genes);
+    }
+
+
 }
