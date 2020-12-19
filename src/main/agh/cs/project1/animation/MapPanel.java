@@ -4,26 +4,32 @@ import agh.cs.project1.simulation.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+
 
 public class MapPanel extends JPanel {
     private final SimulationEngine engine1;
     private final SimulationEngine engine2;
     private final Parameters params;
+    private boolean showDominant;
+    private Animal trackedAnimal;
+    private int trackedOnMap;
+    private int trackedEpoch;
 
     // both maps have the same size and initial parameters
     public MapPanel(SimulationEngine engine1, SimulationEngine engine2, Parameters params){
         this.engine1 = engine1;
         this.engine2 = engine2;
         this.params = params;
+        this.showDominant = false;
+        this.trackedAnimal = null;
+        this.trackedOnMap = -1;   // 0 is left map, 1 is right map
+        this.trackedEpoch = -1;   // epoch when animal started to be tracked
+
     }
 
     @Override
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-
 
         // width & height of window
         int width = this.getWidth();
@@ -104,10 +110,10 @@ public class MapPanel extends JPanel {
 
         // first map
         for (Animal animal : engine1.getAnimals()) {
-            if (engine1.getStats().getDominantGenotype().equals(animal.getGenotype()))
+            if (this.showDominant && engine1.getStats().getDominantGenotype().equals(animal.getGenotype()))
                 g.setColor(new Color(5, 104, 220));
             else
-                g.setColor(animal.setColor());
+            g.setColor(animal.setColor());
 
             int x = animal.getPosition().x * tileWidth + wDiff/2;
             int y = animal.getPosition().y * tileHeight + hDiff/2;
@@ -116,15 +122,17 @@ public class MapPanel extends JPanel {
 
         // second map
         for (Animal animal : engine2.getAnimals()) {
-            if (engine2.getStats().getDominantGenotype().equals(animal.getGenotype()))
+            if (showDominant && engine2.getStats().getDominantGenotype().equals(animal.getGenotype()))
                 g.setColor(new Color(5, 104, 220));
             else
-                g.setColor(animal.setColor());
+            g.setColor(animal.setColor());
 
             int x = animal.getPosition().x * tileWidth + wDiff/2 + width/2;
             int y = animal.getPosition().y * tileHeight + hDiff/2;
             g.fillOval(x, y, tileWidth, tileHeight);
         }
+
+        setShowDominant(false);
 
 
 
@@ -140,7 +148,11 @@ public class MapPanel extends JPanel {
         Statistics stats1 = engine1.getStats();
         int s1 = getWidth()/8;
 
+        Font currentFont = g.getFont();
+        g.setFont(new Font("TimesRoman", Font.BOLD, 15));
         g.drawString("Epoch: " + stats1.getEpoch(), 0,statsHeight);
+        g.drawString("LEFT MAP: ", s1,statsHeight);
+        g.setFont(currentFont);
         g.drawString("Animals: " + stats1.getAliveAnimalsNumber(), s1,statsHeight + l);
         g.drawString("Plants: " + stats1.getPlantsNumber(), s1,statsHeight + 2 * l);
         g.drawString("Avg children: " + stats1.getAverageChildrenNumber(engine1.getAnimals()), s1,statsHeight + 3 * l);
@@ -151,8 +163,11 @@ public class MapPanel extends JPanel {
 
         // second map
         Statistics stats2 = engine2.getStats();
-        int s2 = 5 * getWidth()/8;
+        int s2 = 3 * getWidth()/8;
 
+        g.setFont(new Font("TimesRoman", Font.BOLD, 15));
+        g.drawString("RIGHT MAP: ", s2,statsHeight);
+        g.setFont(currentFont);
         g.drawString("Animals: " + stats2.getAliveAnimalsNumber(), s2,statsHeight + l);
         g.drawString("Plants: " + stats2.getPlantsNumber(), s2,statsHeight + 2 * l);
         g.drawString("Avg children: " + stats2.getAverageChildrenNumber(engine1.getAnimals()), s2,statsHeight + 3 * l);
@@ -162,8 +177,93 @@ public class MapPanel extends JPanel {
         g.drawString("Alive animals with dominant genotype: " + engine2.haveDominantGenotype(),s2,statsHeight + 7 * l);
 
 
+        // tracked animal genotype
+        int s3 = 6 * getWidth()/8;
 
+        // tracked animal on map is pink - when animal die, it is removed from map
+        if (trackedAnimal != null){
+
+
+            g.setFont(new Font("TimesRoman", Font.BOLD, 15));
+            g.drawString("TRACKED ANIMAL ",s3,statsHeight + l);
+            g.setFont(currentFont);
+            g.drawString(("Genotype: " + trackedAnimal.getGenotype().getStringGenotype()),s3,statsHeight + 2 * l);
+            g.drawString("Tracked in epoch: " + trackedEpoch,s3,statsHeight + 3 * l);
+            g.drawString("Birth epoch: " + trackedAnimal.getBirthEpoch(),s3,statsHeight + 4 * l);
+            if (trackedAnimal.getDeathEpoch() != -1)
+                g.drawString("Death epoch: " + trackedAnimal.getDeathEpoch(),s3,statsHeight + 5 * l);
+
+
+
+
+            if (trackedOnMap == 1 && trackedAnimal.getEnergy() > 0) {
+                int x = trackedAnimal.getPosition().x * tileWidth + wDiff / 2 + width / 2;
+                int y = trackedAnimal.getPosition().y * tileHeight + hDiff / 2;
+                g.setColor(new Color(207, 32, 226, 243));
+                g.fillOval(x, y, tileWidth, tileHeight);
+            }
+
+            else if (trackedOnMap == 0 && trackedAnimal.getEnergy() > 0) {
+                int x = trackedAnimal.getPosition().x * tileWidth + wDiff / 2 ;
+                int y = trackedAnimal.getPosition().y * tileHeight + hDiff / 2;
+                g.setColor(new Color(207, 32, 226, 243));
+                g.fillOval(x, y, tileWidth, tileHeight);
+            }
+        }
+    }
+
+
+    public void setShowDominant(boolean showDominant){
+        this.showDominant = showDominant;
+    }
+
+    public void findClickedAnimal(int x, int y){
+        // width & height of window
+        int width = this.getWidth();
+        int height = 3*this.getHeight()/4;
+
+        // width & height of map tile - depending on given map size
+        int tileWidth = width/2/params.getWidth();
+        int tileHeight = height/params.getHeight();
+
+        int mapWidth = params.getWidth() * tileWidth;
+        int mapHeight = params.getHeight() * tileHeight;
+
+        int wDiff = width/2 - mapWidth;
+        int hDiff = height - mapHeight;
+
+        // show its genotype and change color
+        Animal trackedAnimal = null;
+        // possibly on left map
+        if (x < wDiff/2 + mapWidth && y < hDiff/2 + mapHeight) {
+            int positionX = (x - wDiff / 2) / tileWidth;
+            int positionY = (y - hDiff / 2) / tileWidth;
+            Vector2d position = new Vector2d(positionX, positionY);
+
+            trackedAnimal = engine1.getStrongestAnimal(position);
+            if (trackedAnimal != null){
+                setAnimalTracked(trackedAnimal,0,engine2.getStats().getEpoch());
+            }
+
+        }
+
+        // possibly on right map
+        else if (x > width/2 + wDiff/2 && y < hDiff/2 + mapHeight){
+            int positionX = (x - wDiff / 2 - width/2) / tileWidth;
+            int positionY = (y - hDiff / 2) / tileWidth;
+            Vector2d position = new Vector2d(positionX, positionY);
+
+            trackedAnimal = engine2.getStrongestAnimal(position);
+            if (trackedAnimal != null){
+                setAnimalTracked(trackedAnimal,1,engine2.getStats().getEpoch());
+            }
+        }
 
     }
 
+    private void setAnimalTracked(Animal animalTracked, int map, int epoch) {
+        this.trackedAnimal = animalTracked;
+        this.trackedOnMap = map;
+        this.trackedEpoch = epoch;
+    }
 }

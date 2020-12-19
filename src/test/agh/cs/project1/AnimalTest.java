@@ -13,7 +13,7 @@ class AnimalTest {
     public void moveTest(){
 
         Savannah map = new Savannah(4,4,10);
-        Animal animal = new Animal(map,new Vector2d(0,0), SOUTH,10);
+        Animal animal = new Animal(map,new Vector2d(0,0), SOUTH,10,0);
 
         animal.move(0);
         assertEquals(SOUTH, animal.getOrientation());
@@ -31,7 +31,7 @@ class AnimalTest {
     @Test
     public void feedTest(){
         Savannah map = new Savannah(3,3,5);
-        Animal animal = new Animal(map,new Vector2d(0,0), SOUTH,5);
+        Animal animal = new Animal(map,new Vector2d(0,0), SOUTH,5,0);
 
         animal.feed(3);
         assertEquals(8,animal.getEnergy());

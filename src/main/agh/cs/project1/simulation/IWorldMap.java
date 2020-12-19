@@ -95,4 +95,5 @@ public interface IWorldMap {
     Vector2d getChildPosition(Vector2d parentsPosition);
     void removeDeadAnimal(Animal animal, Vector2d position);
     int getSideOfJungle(int width, int height, double jungleRatio);
+    Animal getStrongestAnimal(Vector2d position);
 }

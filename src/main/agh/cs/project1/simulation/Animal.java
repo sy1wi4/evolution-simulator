@@ -16,10 +16,12 @@ public class Animal implements IMapElement {
     private final ArrayList<IEnergyChangeObserver> energyObservers;
     private int children;
     private int lifespan;
+    private final int birthEpoch;
+    private int deathEpoch;
 
 
     // initial animal - random genes
-    public Animal(IWorldMap map, Vector2d initialPosition, MapDirection initialOrientation, int startEnergy){
+    public Animal(IWorldMap map, Vector2d initialPosition, MapDirection initialOrientation, int startEnergy, int birthEpoch){
         this.orientation = initialOrientation;
         this.position = initialPosition;
         this.positionObservers = new ArrayList<>();
@@ -30,13 +32,15 @@ public class Animal implements IMapElement {
         this.genotype = new Genotype();
         this.children = 0;
         this.lifespan = 0;
+        this.birthEpoch = birthEpoch;
+        this.deathEpoch = -1;
         map.placeAnimal(this);
     }
 
 
     // child - genes inherited from parents
-    public Animal(IWorldMap map, Vector2d initialPosition, MapDirection initialOrientation, int startEnergy, Genotype crossedGenotype){
-        this(map,initialPosition,initialOrientation,startEnergy);
+    public Animal(IWorldMap map, Vector2d initialPosition, MapDirection initialOrientation, int startEnergy, int birthEpoch, Genotype crossedGenotype){
+        this(map,initialPosition,initialOrientation,startEnergy,birthEpoch);
         this.genotype = crossedGenotype;
     }
 
@@ -148,7 +152,7 @@ public class Animal implements IMapElement {
     }
 
 
-    public Animal reproduce(Animal other){
+    public Animal reproduce(Animal other, int birthEpoch){
         // we reproduce animals only if they have enough energy
         Vector2d childPosition = map.getChildPosition(this.position);
         int childEnergy = this.energy/4 + other.energy/4;
@@ -160,7 +164,7 @@ public class Animal implements IMapElement {
         this.newChild();
         other.newChild();
         Genotype crossedGenotype = this.genotype.cross(other.getGenotype());
-        return new Animal(map,childPosition,MapDirection.getRandomOrientation(),childEnergy,crossedGenotype);
+        return new Animal(map,childPosition,MapDirection.getRandomOrientation(),childEnergy,birthEpoch,crossedGenotype);
     }
 
     private void newChild() {
@@ -183,4 +187,15 @@ public class Animal implements IMapElement {
         return genotype;
     }
 
+    public int getBirthEpoch() {
+        return birthEpoch;
+    }
+
+    public void setDeathEpoch(int epoch){
+        this.deathEpoch = epoch;
+    }
+
+    public int getDeathEpoch(){
+        return deathEpoch;
+    }
 }

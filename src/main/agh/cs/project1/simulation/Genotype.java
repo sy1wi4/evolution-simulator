@@ -45,10 +45,10 @@ public class Genotype {
         return this.genes;
     }
 
-    public StringBuilder getStringGenotype(){
+    public String getStringGenotype(){
         StringBuilder genotype = new StringBuilder();
         for (int g : genes) genotype.append(g);
-        return genotype;
+        return genotype.toString();
     }
 
     public Genotype cross(Genotype other) {

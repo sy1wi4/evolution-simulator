@@ -27,22 +27,6 @@ public class SimulationEngine{
         return stats;
     }
 
-//    public void printStats(){
-//        System.out.println("~~~~~~~~~~~ stats ~~~~~~~~~~~~~~~");
-//        System.out.println("DAY: " + stats.getEpoch());
-//        System.out.println("ANIMALS: " + stats.getAliveAnimalsNumber());
-//        System.out.println("PLANTS: " + stats.getPlantsNumber());
-//        System.out.println("AVG CHILDREN: " + stats.getAverageChildrenNumber(this.getAnimals()));
-//        System.out.println("AVG ENERGY: " + stats.getAverageEnergyLevel(this.getAnimals()));
-//        System.out.println("AVG LIFESPAN: " + stats.getAverageDeadAnimalsLifespan());
-//        System.out.print("DOMINANT GENOTYPE: ");
-//        for (int g : stats.getDominantGenotype().getGenes()) System.out.print(g);
-//        System.out.println();
-//        System.out.println("HAS DOMINANT G: " + this.haveDominantGenotype());
-//
-//        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-//
-//    }
 
 
     private void placeFirstAnimals(int numberOfAnimals){
@@ -59,7 +43,7 @@ public class SimulationEngine{
             }
 
             MapDirection orientation = MapDirection.getRandomOrientation();
-            Animal animal = new Animal(map, position,orientation,params.getStartEnergy());
+            Animal animal = new Animal(map, position,orientation,params.getStartEnergy(),stats.getEpoch());
             animals.add(animal);
             stats.encounteredNewAnimal(animal.getGenotype());
 
@@ -77,7 +61,6 @@ public class SimulationEngine{
             setPlants();
         }
     }
-
 
     private void moveAnimals(){
         for (Animal animal : animals){
@@ -98,6 +81,7 @@ public class SimulationEngine{
         for (Animal animal : deadAnimals) {
             animals.remove(animal);
             stats.animalDied(animal.getLifespan());
+            animal.setDeathEpoch(stats.getEpoch());
         }
     }
 
@@ -122,7 +106,7 @@ public class SimulationEngine{
         LinkedList<LinkedList<Animal>> pairsToReproduce = map.findAllPairsToReproduce();
 
         for (LinkedList<Animal> parents : pairsToReproduce){
-            Animal child = parents.getFirst().reproduce(parents.getLast());
+            Animal child = parents.getFirst().reproduce(parents.getLast(),stats.getEpoch());
             animals.add(child);
             stats.encounteredNewAnimal(child.getGenotype());
         }
@@ -203,4 +187,9 @@ public class SimulationEngine{
         }
         return ctr;
     }
+
+    public Animal getStrongestAnimal(Vector2d position){
+        return map.getStrongestAnimal(position);
+    }
+
 }

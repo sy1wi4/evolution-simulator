@@ -227,9 +227,10 @@ public class Savannah implements IWorldMap,IPositionChangeObserver, IEnergyChang
         return new Vector2d(x,y);
     }
 
-
+    @Override
     public Animal getStrongestAnimal(Vector2d position){
         PriorityQueue<Animal> animalsOnPos = animals.get(position);
+        System.out.println(animalsOnPos.peek().getNumberOfChildren());
         return animalsOnPos.peek();
     }
 
