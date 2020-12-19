@@ -89,7 +89,7 @@ class AnimalTest {
         Savannah map = new Savannah(2,2,5);
         Animal animal = new Animal(map,new Vector2d(0,1), NORTH_EAST,8,0);
         int turn = animal.chooseTurn();
-        assertTrue(turn >= 0 && turn < 8);
+        assertTrue(turn >= 0 && turn <= 7);
     }
 
     @Test
