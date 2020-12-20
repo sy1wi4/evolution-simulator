@@ -1,13 +1,10 @@
 package agh.cs.project1;
 
 import agh.cs.project1.simulation.Animal;
-import agh.cs.project1.simulation.MapDirection;
 import agh.cs.project1.simulation.Savannah;
 import agh.cs.project1.simulation.Vector2d;
 import org.junit.jupiter.api.Test;
-
 import java.awt.*;
-
 import static agh.cs.project1.simulation.MapDirection.*;
 import static org.junit.jupiter.api.Assertions.*;
 

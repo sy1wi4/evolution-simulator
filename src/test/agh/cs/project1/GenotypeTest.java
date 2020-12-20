@@ -1,7 +1,6 @@
 package agh.cs.project1;
 
 import agh.cs.project1.simulation.Genotype;
-import com.google.gson.internal.$Gson$Preconditions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
