@@ -18,6 +18,8 @@ public class Animal implements IMapElement {
     private int lifespan;
     private final int birthEpoch;
     private int deathEpoch;
+    private boolean isTracked;  // to count tracked animal children
+    private boolean isTrackedDescendant;   // to count tracked animals descendants
 
 
     // initial animal - random genes
@@ -34,6 +36,8 @@ public class Animal implements IMapElement {
         this.lifespan = 0;
         this.birthEpoch = birthEpoch;
         this.deathEpoch = -1;
+        this.isTracked = false;
+        this.isTrackedDescendant = false;
         map.placeAnimal(this);
     }
 
@@ -54,9 +58,11 @@ public class Animal implements IMapElement {
     @Override
     // color of animal on the map indicates its energy level
     public Color setColor() {
-        if (this.energy >= 2*this.startEnergy/3) return new Color(36, 141, 75);
-        else if (this.energy>= this.startEnergy/3) return new Color(219, 145, 28);
-        else return new Color(210, 10, 35);
+        if (this.energy >= 4*this.startEnergy/5) return new Color(61, 154, 38);
+        else if (this.energy >= 3*this.startEnergy/5) return new Color(102, 177, 81);
+        else if (this.energy>= 2*this.startEnergy/5) return new Color(208, 178, 60);
+        else if (this.energy>= this.startEnergy/5) return new Color(198, 92, 54);
+        else return new Color(175, 63, 53);
     }
 
 
@@ -155,7 +161,7 @@ public class Animal implements IMapElement {
     public Animal reproduce(Animal other, int birthEpoch){
         // we reproduce animals only if they have enough energy
         Vector2d childPosition = map.getChildPosition(this.position);
-        int childEnergy = this.energy/4 + other.energy/4;
+        int childEnergy = this.energy/4 + other.getEnergy()/4;
         this.energy -= this.energy/4;
         other.energy -= other.energy/4;
 
@@ -166,6 +172,7 @@ public class Animal implements IMapElement {
         Genotype crossedGenotype = this.genotype.cross(other.getGenotype());
         return new Animal(map,childPosition,MapDirection.getRandomOrientation(),childEnergy,birthEpoch,crossedGenotype);
     }
+
 
     private void newChild() {
         this.children++;
@@ -202,5 +209,20 @@ public class Animal implements IMapElement {
     public void setEnergy(int energy){
         this.energy = energy;
         this.energyChanged();
+    }
+
+    public void setTracked(boolean isTracked){
+        this.isTracked = isTracked;
+    }
+
+    public boolean isTracked(){
+        return isTracked;
+    }
+    public void setTrackedDescendant(boolean isTrackedDescendant){
+        this.isTrackedDescendant = isTrackedDescendant;
+    }
+
+    public boolean isTrackedDescendant(){
+        return isTrackedDescendant;
     }
 }

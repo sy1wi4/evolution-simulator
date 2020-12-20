@@ -2,10 +2,8 @@ package agh.cs.project1.animation;
 
 import agh.cs.project1.simulation.Parameters;
 import agh.cs.project1.simulation.SimulationEngine;
-import agh.cs.project1.simulation.Vector2d;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 
 public class Main implements ActionListener {

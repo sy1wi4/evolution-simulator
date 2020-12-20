@@ -13,7 +13,6 @@ public class Statistics {
     private Genotype dominantGenotype = null;
     private final Map<Genotype,Integer> genotypeCounter = new HashMap<>();
     private int epoch = 1;
-    private int trackedAnimalChildren = 0;
 
     public void nextEpoch(){
         epoch++;
@@ -89,13 +88,5 @@ public class Statistics {
             genotypeCounter.put(genotype, 1);
             if (dominantGenotype == null) dominantGenotype = genotype;
         }
-    }
-
-    public void trackedAnimalHaveChild(){
-        trackedAnimalChildren++;
-    }
-
-    public int getTrackedAnimalChildren(){
-        return trackedAnimalChildren;
     }
 }

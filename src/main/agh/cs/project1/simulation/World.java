@@ -21,5 +21,12 @@ public class World {
         Main simulation = new Main(engine1,engine2,params);
         simulation.run();
 
+
+        // TODO: dzieci i potomkowie obserwowanego na mapie ?!?!
+        // TODO: zamiast dwóch obserwerów observable (?)
+        // TODO: plik tekstowy ze statystykami (średnia statystyk z epok)
+        // TODO: integration test
+
+
     }
 }

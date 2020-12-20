@@ -49,7 +49,7 @@ public class Savannah implements IWorldMap,IPositionChangeObserver, IEnergyChang
     public Object objectAt(Vector2d position) {
         if (animals.get(position) == null || animals.get(position).size()== 0)
             return plants.get(position);
-        else return this.getStrongestAnimal(position);
+        else return this.getAnimalToTrack(position);
     }
 
 
@@ -227,7 +227,8 @@ public class Savannah implements IWorldMap,IPositionChangeObserver, IEnergyChang
     }
 
     @Override
-    public Animal getStrongestAnimal(Vector2d position){
+    // on given position tracked animal is the strongest one
+    public Animal getAnimalToTrack(Vector2d position){
         PriorityQueue<Animal> animalsOnPos = animals.get(position);
         if (animalsOnPos == null) throw new IllegalArgumentException("No animals on position " + position.toString());
         return animalsOnPos.peek();

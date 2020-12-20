@@ -12,6 +12,8 @@ public class SimulationEngine{
     private final List<Plant> plants;
     private final Parameters params;
     private final Statistics stats;
+    private int trackedAnimalChildren;
+    private int trackedAnimalDescendants;
 
 
     public SimulationEngine(Parameters params){
@@ -20,6 +22,8 @@ public class SimulationEngine{
         this.animals  = new ArrayList<>();
         this.plants = new ArrayList<>();
         this.stats = new Statistics();
+        this.trackedAnimalChildren = 0;
+        this.trackedAnimalDescendants = 0;
         placeFirstAnimals(params.getNumberOfAnimals());
     }
 
@@ -107,7 +111,19 @@ public class SimulationEngine{
 
         for (LinkedList<Animal> parents : pairsToReproduce){
             Animal child = parents.getFirst().reproduce(parents.getLast(),stats.getEpoch());
+
+            if (parents.getLast().isTracked() || parents.getFirst().isTracked()) {
+                trackedAnimalChildren++;
+                trackedAnimalDescendants++;
+                child.setTrackedDescendant(true);
+            }
+
+            if (parents.getLast().isTrackedDescendant() || parents.getFirst().isTrackedDescendant()) {
+                trackedAnimalDescendants++;
+                child.setTrackedDescendant(true);
+            }
             animals.add(child);
+
             stats.encounteredNewAnimal(child.getGenotype());
         }
     }
@@ -188,8 +204,25 @@ public class SimulationEngine{
         return ctr;
     }
 
-    public Animal getStrongestAnimal(Vector2d position){
-        return map.getStrongestAnimal(position);
+    public Animal getAnimalToTrack(Vector2d position){
+        return map.getAnimalToTrack(position);
     }
+
+    public void setTrackedAnimalChildren(int children){
+        this.trackedAnimalChildren = children;
+    }
+
+    public int getTrackedAnimalChildren(){
+        return trackedAnimalChildren;
+    }
+
+    public void setTrackedAnimalDescendants(int descendants){
+        this.trackedAnimalDescendants = descendants;
+    }
+
+    public int getTrackedAnimalDescendants(){
+        return trackedAnimalDescendants;
+    }
+
 
 }

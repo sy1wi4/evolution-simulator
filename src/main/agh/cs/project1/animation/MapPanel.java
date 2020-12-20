@@ -52,7 +52,7 @@ public class MapPanel extends JPanel {
 
 
         // STEPPE AREA
-        g.setColor(new Color(226, 247, 117));
+        g.setColor(new Color(220, 241, 141));
 
         // first map (left)
         g.fillRect(wDiff/2, hDiff/2, mapWidth , mapHeight);
@@ -63,7 +63,7 @@ public class MapPanel extends JPanel {
 
         // JUNGLE AREA
 
-        g.setColor(new Color(135, 196, 94));
+        g.setColor(new Color(164, 229, 105));
         int jungleLowerLeftX = engine1.getMap().getJungleLowerLeft(params.getWidth(), params.getHeight(),params.getJungleRatio()).x;
         int jungleLowerLeftY = engine1.getMap().getJungleLowerLeft(params.getWidth(), params.getHeight(),params.getJungleRatio()).y;
         // side of jungle
@@ -151,7 +151,7 @@ public class MapPanel extends JPanel {
         Font currentFont = g.getFont();
         g.setFont(new Font("TimesRoman", Font.BOLD, 15));
         g.drawString("Epoch: " + stats1.getEpoch(), 0,statsHeight);
-        g.drawString("LEFT MAP: ", s1,statsHeight);
+        g.drawString("LEFT MAP ", s1,statsHeight);
         g.setFont(currentFont);
         g.drawString("Animals: " + stats1.getAliveAnimalsNumber(), s1,statsHeight + l);
         g.drawString("Plants: " + stats1.getPlantsNumber(), s1,statsHeight + 2 * l);
@@ -166,7 +166,7 @@ public class MapPanel extends JPanel {
         int s2 = 3 * getWidth()/8;
 
         g.setFont(new Font("TimesRoman", Font.BOLD, 15));
-        g.drawString("RIGHT MAP: ", s2,statsHeight);
+        g.drawString("RIGHT MAP ", s2,statsHeight);
         g.setFont(currentFont);
         g.drawString("Animals: " + stats2.getAliveAnimalsNumber(), s2,statsHeight + l);
         g.drawString("Plants: " + stats2.getPlantsNumber(), s2,statsHeight + 2 * l);
@@ -180,7 +180,7 @@ public class MapPanel extends JPanel {
         // tracked animal genotype
         int s3 = 6 * getWidth()/8;
 
-        // tracked animal on map is pink - when animal die, it is removed from map
+        // tracked animal on map is black - when animal dies, it is removed from map
         if (trackedAnimal != null){
 
 
@@ -190,8 +190,18 @@ public class MapPanel extends JPanel {
             g.drawString(("Genotype: " + trackedAnimal.getGenotype().getStringGenotype()),s3,statsHeight + 2 * l);
             g.drawString("Tracked in epoch: " + trackedEpoch,s3,statsHeight + 3 * l);
             g.drawString("Birth epoch: " + trackedAnimal.getBirthEpoch(),s3,statsHeight + 4 * l);
+            if (trackedOnMap == 0) {
+                g.drawString("Children born after " + (stats1.getEpoch() - trackedEpoch) + " epoch(s): " + engine1.getTrackedAnimalChildren(), s3, statsHeight + 5 * l);
+                g.drawString("Descendant born after " + (stats1.getEpoch() - trackedEpoch) + " epoch(s): " + engine1.getTrackedAnimalDescendants(), s3, statsHeight + 6 * l);
+
+            }
+            if (trackedOnMap == 1) {
+                g.drawString("Children born after " + (stats2.getEpoch() - trackedEpoch) + " epoch(s): " + engine2.getTrackedAnimalChildren(), s3, statsHeight + 5 * l);                g.drawString("Descendant born after " + (stats1.getEpoch() - trackedEpoch) + " epoch(s): " + engine1.getTrackedAnimalDescendants(), s3, statsHeight + 6 * l);
+                g.drawString("Descendant born after " + (stats2.getEpoch() - trackedEpoch) + " epoch(s): " + engine2.getTrackedAnimalDescendants(), s3, statsHeight + 6 * l);
+
+            }
             if (trackedAnimal.getDeathEpoch() != -1)
-                g.drawString("Death epoch: " + trackedAnimal.getDeathEpoch(),s3,statsHeight + 5 * l);
+                g.drawString("Death epoch: " + trackedAnimal.getDeathEpoch(),s3,statsHeight + 7 * l);
 
 
 
@@ -199,14 +209,14 @@ public class MapPanel extends JPanel {
             if (trackedOnMap == 1 && trackedAnimal.getEnergy() > 0) {
                 int x = trackedAnimal.getPosition().x * tileWidth + wDiff / 2 + width / 2;
                 int y = trackedAnimal.getPosition().y * tileHeight + hDiff / 2;
-                g.setColor(new Color(207, 32, 226, 243));
+                g.setColor(new Color(0, 0, 0, 255));
                 g.fillOval(x, y, tileWidth, tileHeight);
             }
 
             else if (trackedOnMap == 0 && trackedAnimal.getEnergy() > 0) {
                 int x = trackedAnimal.getPosition().x * tileWidth + wDiff / 2 ;
                 int y = trackedAnimal.getPosition().y * tileHeight + hDiff / 2;
-                g.setColor(new Color(207, 32, 226, 243));
+                g.setColor(new Color(0, 0, 0, 255));
                 g.fillOval(x, y, tileWidth, tileHeight);
             }
         }
@@ -233,16 +243,15 @@ public class MapPanel extends JPanel {
         int hDiff = height - mapHeight;
 
         // show its genotype and change color
-        Animal trackedAnimal = null;
         // possibly on left map
         if (x < wDiff/2 + mapWidth && y < hDiff/2 + mapHeight) {
             int positionX = (x - wDiff / 2) / tileWidth;
             int positionY = (y - hDiff / 2) / tileWidth;
             Vector2d position = new Vector2d(positionX, positionY);
 
-            trackedAnimal = engine1.getStrongestAnimal(position);
+            trackedAnimal = engine1.getAnimalToTrack(position);
             if (trackedAnimal != null){
-                setAnimalTracked(trackedAnimal,0,engine2.getStats().getEpoch());
+                setTrackedAnimal(trackedAnimal,0,engine2.getStats().getEpoch());
             }
 
         }
@@ -253,17 +262,32 @@ public class MapPanel extends JPanel {
             int positionY = (y - hDiff / 2) / tileWidth;
             Vector2d position = new Vector2d(positionX, positionY);
 
-            trackedAnimal = engine2.getStrongestAnimal(position);
+            trackedAnimal = engine2.getAnimalToTrack(position);
             if (trackedAnimal != null){
-                setAnimalTracked(trackedAnimal,1,engine2.getStats().getEpoch());
+                setTrackedAnimal(trackedAnimal,1,engine2.getStats().getEpoch());
             }
+        }
+    }
+
+    private void setTrackedAnimal(Animal animalTracked, int map, int epoch) {
+        if (this.trackedAnimal != null) {
+            trackedAnimal.setTracked(false);
+            // wyzeruj przodków
+        }
+        this.trackedAnimal = animalTracked;
+        this.trackedOnMap = map;
+        this.trackedEpoch = epoch;
+        trackedAnimal.setTracked(true);
+        if (map == 0) {
+            engine1.setTrackedAnimalChildren(0);
+            engine1.setTrackedAnimalDescendants(0);
+
+        }
+        else if (map == 1) {
+            engine2.setTrackedAnimalChildren(0);
+            engine2.setTrackedAnimalDescendants(0);
         }
 
     }
 
-    private void setAnimalTracked(Animal animalTracked, int map, int epoch) {
-        this.trackedAnimal = animalTracked;
-        this.trackedOnMap = map;
-        this.trackedEpoch = epoch;
-    }
 }
