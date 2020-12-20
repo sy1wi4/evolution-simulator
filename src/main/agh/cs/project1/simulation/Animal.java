@@ -198,4 +198,9 @@ public class Animal implements IMapElement {
     public int getDeathEpoch(){
         return deathEpoch;
     }
+
+    public void setEnergy(int energy){
+        this.energy = energy;
+        this.energyChanged();
+    }
 }

@@ -46,11 +46,10 @@ public class Savannah implements IWorldMap,IPositionChangeObserver, IEnergyChang
 
 
     @Override
-    // do zmiany kiedyś tam - tylko do debugowania na razie
     public Object objectAt(Vector2d position) {
         if (animals.get(position) == null || animals.get(position).size()== 0)
             return plants.get(position);
-        else return animals.get(position).size();
+        else return this.getStrongestAnimal(position);
     }
 
 
@@ -117,7 +116,7 @@ public class Savannah implements IWorldMap,IPositionChangeObserver, IEnergyChang
     public void removeAnimalFromPosition(Animal animal, Vector2d position){
         PriorityQueue<Animal> animalsOnOldPos = animals.get(position);
 
-        if (animalsOnOldPos.size() == 0) throw new IllegalArgumentException("No animal on position" + position);
+        if (animalsOnOldPos == null || animalsOnOldPos.size() == 0) throw new IllegalArgumentException("No animal on position" + position);
         else animalsOnOldPos.remove(animal);
     }
 
@@ -230,7 +229,7 @@ public class Savannah implements IWorldMap,IPositionChangeObserver, IEnergyChang
     @Override
     public Animal getStrongestAnimal(Vector2d position){
         PriorityQueue<Animal> animalsOnPos = animals.get(position);
-        System.out.println(animalsOnPos.peek().getNumberOfChildren());
+        if (animalsOnPos == null) throw new IllegalArgumentException("No animals on position " + position.toString());
         return animalsOnPos.peek();
     }
 
