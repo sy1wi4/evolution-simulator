@@ -1,6 +1,6 @@
 package agh.cs.project1;
 
-import agh.cs.project1.simulation.Genotype;
+import agh.cs.project1.simulation.classes.Genotype;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

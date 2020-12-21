@@ -1,4 +1,4 @@
-package agh.cs.project1.simulation;
+package agh.cs.project1.simulation.engine;
 
 public class Parameters {
 

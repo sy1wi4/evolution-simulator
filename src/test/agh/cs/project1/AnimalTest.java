@@ -1,11 +1,11 @@
 package agh.cs.project1;
 
-import agh.cs.project1.simulation.Animal;
-import agh.cs.project1.simulation.Savannah;
-import agh.cs.project1.simulation.Vector2d;
+import agh.cs.project1.simulation.classes.Animal;
+import agh.cs.project1.simulation.map.Savannah;
+import agh.cs.project1.simulation.map.Vector2d;
 import org.junit.jupiter.api.Test;
 import java.awt.*;
-import static agh.cs.project1.simulation.MapDirection.*;
+import static agh.cs.project1.simulation.map.MapDirection.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AnimalTest {

@@ -1,14 +1,14 @@
 package agh.cs.project1;
 
-import agh.cs.project1.simulation.Animal;
-import agh.cs.project1.simulation.Plant;
-import agh.cs.project1.simulation.Savannah;
-import agh.cs.project1.simulation.Vector2d;
+import agh.cs.project1.simulation.classes.Animal;
+import agh.cs.project1.simulation.classes.Plant;
+import agh.cs.project1.simulation.map.Savannah;
+import agh.cs.project1.simulation.map.Vector2d;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
 
-import static agh.cs.project1.simulation.MapDirection.*;
+import static agh.cs.project1.simulation.map.MapDirection.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SavannahTest {
@@ -232,10 +232,6 @@ public class SavannahTest {
         Vector2d position = new Vector2d(5,4);
         Animal animal1 = new Animal(map,position, NORTH_EAST,4,0);
         Animal animal2 = new Animal(map,position, WEST,6,0);
-
-
-        Exception ex = assertThrows(IllegalArgumentException.class,
-                () -> map.getAnimalToTrack(new Vector2d(1,1)));
 
         assertEquals(animal2,map.getAnimalToTrack(position));
 

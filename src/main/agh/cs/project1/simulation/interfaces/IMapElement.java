@@ -1,4 +1,6 @@
-package agh.cs.project1.simulation;
+package agh.cs.project1.simulation.interfaces;
+
+import agh.cs.project1.simulation.map.Vector2d;
 
 import java.awt.*;
 

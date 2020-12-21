@@ -1,6 +1,11 @@
 package agh.cs.project1.animation;
 
-import agh.cs.project1.simulation.*;
+import agh.cs.project1.simulation.classes.Animal;
+import agh.cs.project1.simulation.classes.Plant;
+import agh.cs.project1.simulation.engine.Parameters;
+import agh.cs.project1.simulation.engine.SimulationEngine;
+import agh.cs.project1.simulation.map.Vector2d;
+import agh.cs.project1.simulation.statistics.Statistics;
 
 import javax.swing.*;
 import java.awt.*;
@@ -291,5 +296,9 @@ public class MapPanel extends JPanel {
         }
 
     }
+//
+//    private void saveStatsToFile(){
+//
+//    }
 
 }

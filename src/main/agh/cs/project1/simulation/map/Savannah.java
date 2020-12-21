@@ -1,8 +1,14 @@
-package agh.cs.project1.simulation;
+package agh.cs.project1.simulation.map;
+
+import agh.cs.project1.simulation.classes.Animal;
+import agh.cs.project1.simulation.classes.Plant;
+import agh.cs.project1.simulation.interfaces.IEnergyChangeObserver;
+import agh.cs.project1.simulation.interfaces.IPositionChangeObserver;
+import agh.cs.project1.simulation.interfaces.IWorldMap;
 
 import java.util.*;
 
-public class Savannah implements IWorldMap,IPositionChangeObserver, IEnergyChangeObserver {
+public class Savannah implements IWorldMap, IPositionChangeObserver, IEnergyChangeObserver {
 
     private final Map<Vector2d, PriorityQueue<Animal>> animals;
     private final Map<Vector2d, Plant> plants;
@@ -45,7 +51,6 @@ public class Savannah implements IWorldMap,IPositionChangeObserver, IEnergyChang
     }
 
 
-    @Override
     public Object objectAt(Vector2d position) {
         if (animals.get(position) == null || animals.get(position).size()== 0)
             return plants.get(position);

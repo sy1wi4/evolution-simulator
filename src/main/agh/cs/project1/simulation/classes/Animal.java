@@ -1,8 +1,15 @@
-package agh.cs.project1.simulation;
+package agh.cs.project1.simulation.classes;
+
+import agh.cs.project1.simulation.interfaces.IEnergyChangeObserver;
+import agh.cs.project1.simulation.interfaces.IMapElement;
+import agh.cs.project1.simulation.interfaces.IPositionChangeObserver;
+import agh.cs.project1.simulation.interfaces.IWorldMap;
+import agh.cs.project1.simulation.map.MapDirection;
+import agh.cs.project1.simulation.map.Vector2d;
 
 import java.awt.*;
 import java.util.ArrayList;
-import static agh.cs.project1.simulation.MapDirection.values;
+import static agh.cs.project1.simulation.map.MapDirection.values;
 
 public class Animal implements IMapElement {
 

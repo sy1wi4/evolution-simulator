@@ -1,4 +1,8 @@
-package agh.cs.project1.simulation;
+package agh.cs.project1.simulation.interfaces;
+
+import agh.cs.project1.simulation.classes.Animal;
+import agh.cs.project1.simulation.classes.Plant;
+import agh.cs.project1.simulation.map.Vector2d;
 
 import java.util.LinkedList;
 
@@ -7,8 +11,6 @@ public interface IWorldMap {
     void placeAnimal(Animal animal);
 
     void setPlant(Plant plant);
-
-    Object objectAt(Vector2d position);
 
     Vector2d getRandomPosition(int minX, int maxX, int minY, int maxY);
 

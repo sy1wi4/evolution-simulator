@@ -1,5 +1,14 @@
-package agh.cs.project1.simulation;
+package agh.cs.project1.simulation.engine;
 
+
+import agh.cs.project1.simulation.classes.Animal;
+import agh.cs.project1.simulation.classes.Genotype;
+import agh.cs.project1.simulation.classes.Plant;
+import agh.cs.project1.simulation.interfaces.IWorldMap;
+import agh.cs.project1.simulation.map.MapDirection;
+import agh.cs.project1.simulation.map.Savannah;
+import agh.cs.project1.simulation.map.Vector2d;
+import agh.cs.project1.simulation.statistics.Statistics;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -59,6 +68,7 @@ public class SimulationEngine{
 
 
     public void nextDay(){
+
         stats.nextEpoch();
         setDominantGenotypeInEpoch();
         if (animals.size() > 0) {
@@ -239,5 +249,6 @@ public class SimulationEngine{
     public Genotype getDominantGenotypeInEpoch(){
         return this.dominantGenotypeInEpoch;
     }
+
 
 }

@@ -1,4 +1,4 @@
-package agh.cs.project1.simulation;
+package agh.cs.project1.simulation.classes;
 
 import java.util.Arrays;
 import java.util.Random;

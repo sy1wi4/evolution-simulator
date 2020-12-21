@@ -1,6 +1,6 @@
 package agh.cs.project1;
 
-import agh.cs.project1.simulation.Vector2d;
+import agh.cs.project1.simulation.map.Vector2d;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,8 +1,11 @@
-package agh.cs.project1.simulation;
+package agh.cs.project1.simulation.classes;
+
+import agh.cs.project1.simulation.interfaces.IMapElement;
+import agh.cs.project1.simulation.map.Vector2d;
 
 import java.awt.*;
 
-public class Plant implements IMapElement{
+public class Plant implements IMapElement {
     private final Vector2d position;
 
     public Plant(Vector2d position){
