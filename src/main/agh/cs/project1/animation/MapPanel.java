@@ -195,8 +195,8 @@ public class MapPanel extends JPanel {
                 g.drawString("Descendant born after " + (stats1.getEpoch() - trackedEpoch) + " epoch(s): " + engine1.getTrackedAnimalDescendants(), s3, statsHeight + 6 * l);
 
             }
-            if (trackedOnMap == 1) {
-                g.drawString("Children born after " + (stats2.getEpoch() - trackedEpoch) + " epoch(s): " + engine2.getTrackedAnimalChildren(), s3, statsHeight + 5 * l);                g.drawString("Descendant born after " + (stats1.getEpoch() - trackedEpoch) + " epoch(s): " + engine1.getTrackedAnimalDescendants(), s3, statsHeight + 6 * l);
+            else if (trackedOnMap == 1) {
+                g.drawString("Children born after " + (stats2.getEpoch() - trackedEpoch) + " epoch(s): " + engine2.getTrackedAnimalChildren(), s3, statsHeight + 5 * l);
                 g.drawString("Descendant born after " + (stats2.getEpoch() - trackedEpoch) + " epoch(s): " + engine2.getTrackedAnimalDescendants(), s3, statsHeight + 6 * l);
 
             }
@@ -272,7 +272,6 @@ public class MapPanel extends JPanel {
     private void setTrackedAnimal(Animal animalTracked, int map, int epoch) {
         if (this.trackedAnimal != null) {
             trackedAnimal.setTracked(false);
-            // wyzeruj przodków
         }
         this.trackedAnimal = animalTracked;
         this.trackedOnMap = map;
@@ -281,11 +280,14 @@ public class MapPanel extends JPanel {
         if (map == 0) {
             engine1.setTrackedAnimalChildren(0);
             engine1.setTrackedAnimalDescendants(0);
+            engine1.resetTrackedDescendant();
 
         }
         else if (map == 1) {
             engine2.setTrackedAnimalChildren(0);
             engine2.setTrackedAnimalDescendants(0);
+            engine2.resetTrackedDescendant();
+
         }
 
     }

@@ -230,7 +230,7 @@ public class Savannah implements IWorldMap,IPositionChangeObserver, IEnergyChang
     // on given position tracked animal is the strongest one
     public Animal getAnimalToTrack(Vector2d position){
         PriorityQueue<Animal> animalsOnPos = animals.get(position);
-        if (animalsOnPos == null) throw new IllegalArgumentException("No animals on position " + position.toString());
+        if (animalsOnPos == null) return null;
         return animalsOnPos.peek();
     }
 

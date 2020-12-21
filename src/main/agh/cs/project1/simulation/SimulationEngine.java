@@ -224,5 +224,9 @@ public class SimulationEngine{
         return trackedAnimalDescendants;
     }
 
+    public void resetTrackedDescendant(){
+        for (Animal animal : animals) animal.setTrackedDescendant(false);
+    }
+
 
 }
