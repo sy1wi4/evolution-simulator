@@ -14,6 +14,7 @@ public class SimulationEngine{
     private final Statistics stats;
     private int trackedAnimalChildren;
     private int trackedAnimalDescendants;
+    private Genotype dominantGenotypeInEpoch;
 
 
     public SimulationEngine(Parameters params){
@@ -24,7 +25,9 @@ public class SimulationEngine{
         this.stats = new Statistics();
         this.trackedAnimalChildren = 0;
         this.trackedAnimalDescendants = 0;
+        this.dominantGenotypeInEpoch = null;
         placeFirstAnimals(params.getNumberOfAnimals());
+        setDominantGenotypeInEpoch();
     }
 
     public Statistics getStats(){
@@ -57,6 +60,7 @@ public class SimulationEngine{
 
     public void nextDay(){
         stats.nextEpoch();
+        setDominantGenotypeInEpoch();
         if (animals.size() > 0) {
             removeDeadAnimals();
             moveAnimals();
@@ -197,7 +201,7 @@ public class SimulationEngine{
     public int haveDominantGenotype(){
         int ctr = 0;
         for (Animal animal : animals){
-            if (animal.getGenotype().equals(stats.getDominantGenotype())){
+            if (animal.getGenotype().equals(this.dominantGenotypeInEpoch)){
                 ctr++;
             }
         }
@@ -228,5 +232,12 @@ public class SimulationEngine{
         for (Animal animal : animals) animal.setTrackedDescendant(false);
     }
 
+    public void setDominantGenotypeInEpoch(){
+        this.dominantGenotypeInEpoch = stats.getDominantGenotypeInEpoch(animals);
+    }
+
+    public Genotype getDominantGenotypeInEpoch(){
+        return this.dominantGenotypeInEpoch;
+    }
 
 }

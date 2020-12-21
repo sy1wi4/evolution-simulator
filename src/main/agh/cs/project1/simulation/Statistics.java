@@ -10,9 +10,11 @@ public class Statistics {
     private int plantsNumber = 0;
     private int overallDeadAnimalsNumber = 0;
     private int lifespanSum = 0;
-    private Genotype dominantGenotype = null;
-    private final Map<Genotype,Integer> genotypeCounter = new HashMap<>();
+    private Genotype dominantGenotypeInEpoch = null;
     private int epoch = 1;
+    private int dominantCtrInEpoch = 0;
+    private final Map<Genotype,Integer> genotypeCounterThroughEpochs = new HashMap<>();  // to get dominant genotype through all epochs
+    private Genotype dominantGenotypeThroughEpochs = null;
 
     public void nextEpoch(){
         epoch++;
@@ -72,21 +74,53 @@ public class Statistics {
         return plantsNumber;
     }
 
-    public Genotype getDominantGenotype() {
-        return dominantGenotype;
+    public Genotype getDominantGenotypeInEpoch(List<Animal> aliveAnimals) {
+        Map<Genotype,Integer> genotypeCounter = new HashMap<>();
+        this.dominantCtrInEpoch = 0;
+        this.dominantGenotypeInEpoch = null;
+        for (Animal animal : aliveAnimals)
+            addGenotypeInEpoch(animal.getGenotype(),genotypeCounter);
+        return dominantGenotypeInEpoch;
     }
 
-    private void addGenotype(Genotype genotype){
+    private void addGenotypeInEpoch(Genotype genotype, Map<Genotype,Integer> genotypeCounter){
 
         if (genotypeCounter.containsKey(genotype)) {
-            genotypeCounter.put(genotype, genotypeCounter.remove(genotype) + 1);
+            int ctr = genotypeCounter.remove(genotype);
+            genotypeCounter.put(genotype, ctr + 1);
+
             // current genotype has become dominant
-            if (genotypeCounter.get(genotype) > genotypeCounter.get(dominantGenotype))
-                dominantGenotype = genotype;
+            if (ctr + 1 > dominantCtrInEpoch) {
+                dominantGenotypeInEpoch = genotype;
+                dominantCtrInEpoch = ctr + 1;
+            }
         }
         else {
             genotypeCounter.put(genotype, 1);
-            if (dominantGenotype == null) dominantGenotype = genotype;
+            if (dominantGenotypeInEpoch == null) {
+                dominantGenotypeInEpoch = genotype;
+                dominantCtrInEpoch = 1;
+            }
         }
+    }
+
+
+    // without division into epochs
+    private void addGenotype(Genotype genotype){
+
+        if (genotypeCounterThroughEpochs.containsKey(genotype)) {
+            genotypeCounterThroughEpochs.put(genotype, genotypeCounterThroughEpochs.remove(genotype) + 1);
+            // current genotype has become dominant
+            if (genotypeCounterThroughEpochs.get(genotype) > genotypeCounterThroughEpochs.get(dominantGenotypeThroughEpochs))
+                dominantGenotypeThroughEpochs = genotype;
+        }
+        else {
+            genotypeCounterThroughEpochs.put(genotype, 1);
+            if (dominantGenotypeThroughEpochs == null) dominantGenotypeThroughEpochs = genotype;
+        }
+    }
+
+    public Genotype getDominantGenotypeThroughEpochs() {
+        return dominantGenotypeThroughEpochs;
     }
 }

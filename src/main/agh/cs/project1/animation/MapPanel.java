@@ -110,7 +110,7 @@ public class MapPanel extends JPanel {
 
         // first map
         for (Animal animal : engine1.getAnimals()) {
-            if (this.showDominant && engine1.getStats().getDominantGenotype().equals(animal.getGenotype()))
+            if (this.showDominant && engine1.getDominantGenotypeInEpoch().equals(animal.getGenotype()))
                 g.setColor(new Color(5, 104, 220));
             else
             g.setColor(animal.setColor());
@@ -122,7 +122,7 @@ public class MapPanel extends JPanel {
 
         // second map
         for (Animal animal : engine2.getAnimals()) {
-            if (showDominant && engine2.getStats().getDominantGenotype().equals(animal.getGenotype()))
+            if (this.showDominant && engine2.getDominantGenotypeInEpoch().equals(animal.getGenotype()))
                 g.setColor(new Color(5, 104, 220));
             else
             g.setColor(animal.setColor());
@@ -158,7 +158,7 @@ public class MapPanel extends JPanel {
         g.drawString("Avg children: " + stats1.getAverageChildrenNumber(engine1.getAnimals()), s1,statsHeight + 3 * l);
         g.drawString("Avg energy: " + stats1.getAverageEnergyLevel(engine1.getAnimals()), s1,statsHeight + 4 * l);
         g.drawString("Avg lifespan: " + stats1.getAverageDeadAnimalsLifespan(), s1,statsHeight + 5 * l);
-        g.drawString("Dominant genotype: " + stats1.getDominantGenotype().getStringGenotype(), s1,statsHeight + 6 * l);
+        g.drawString("Dominant genotype: " + engine1.getDominantGenotypeInEpoch().getStringGenotype(), s1,statsHeight + 6 * l);
         g.drawString("Alive animals with dominant genotype: " + engine1.haveDominantGenotype(),s1,statsHeight + 7 * l);
 
         // second map
@@ -173,7 +173,7 @@ public class MapPanel extends JPanel {
         g.drawString("Avg children: " + stats2.getAverageChildrenNumber(engine1.getAnimals()), s2,statsHeight + 3 * l);
         g.drawString("Avg energy: " + stats2.getAverageEnergyLevel(engine1.getAnimals()), s2,statsHeight + 4 * l);
         g.drawString("Avg lifespan: " + stats2.getAverageDeadAnimalsLifespan(), s2,statsHeight + 5 * l);
-        g.drawString("Dominant genotype: " + stats2.getDominantGenotype().getStringGenotype(), s2,statsHeight + 6 * l);
+        g.drawString("Dominant genotype: " + engine2.getDominantGenotypeInEpoch().getStringGenotype(), s2,statsHeight + 6 * l);
         g.drawString("Alive animals with dominant genotype: " + engine2.haveDominantGenotype(),s2,statsHeight + 7 * l);
 
 
