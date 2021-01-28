@@ -7,7 +7,7 @@
 Animal's energy level is indicated by the appropriate color:
 ![](https://github.com/sy1wi4/evolution-simulator/blob/master/energy-lvl.png)
 
-To track animal click "Stop simulation" button, choose animal and "Resume simulation" - now you can follow it its statistics.
+To track animal click "Stop simulation" button, choose animal and "Resume simulation" - now you can follow its statistics.
 Tracked animal is highlighted in black.
 ![](https://github.com/sy1wi4/evolution-simulator/blob/master/tracked.png)
 
